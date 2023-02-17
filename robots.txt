@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://chantsune.github.io/blogsitemap.xml
+Sitemap: https://chantsune.github.iositemap.xml
