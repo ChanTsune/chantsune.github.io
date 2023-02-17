@@ -1,0 +1,41 @@
+baseURL = "https://chantsune.github.io/blog"
+
+languageCode = "ja"
+DefaultContentLanguage = "ja"
+HasCJKLanguage = true
+enableRobotsTXT = true
+
+# ブログのタイトル
+title = "エンジニアもどきの技術メモ"
+
+theme = "mainroad"
+paginate = 20
+
+# 自己紹介
+[Author]
+    name = "ChanTsune"
+    bio = "C++とPythonが大好きなエンジニアもどきの技術メモ"
+    avatar = "img/avatar.png"
+
+[Params]
+    customCSS = ["css/custom.css"]
+    copyright = "ChanTsune"
+    readmore = true
+    authorbox = true
+    post_meta = ["date", "categories"]
+    twitter_cards = true
+
+# ページのテーマカラー
+[Params.style.vars]
+  highlightColor = "#e22d30"
+
+# SNS等のユーザー名
+[Params.widgets.social]
+  github = "ChanTsune"
+
+[Params.sidebar]
+    home = "right"
+    list = "right"
+    single = "right"
+    widgets = ["search", "recent", "categories", "taglist", "social"]
+
