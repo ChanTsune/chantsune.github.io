@@ -1,0 +1,4 @@
+This is a Brave Rewards publisher verification file.
+
+Domain: chantsune.github.io
+Token: 23c99047eca9610f81bd53c33a1edeb4bb91aa4287f0f2cbc7a8dcff10e9ded1
