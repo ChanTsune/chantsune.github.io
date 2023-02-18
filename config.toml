@@ -22,12 +22,11 @@ paginate = 20
     authorbox = true
     post_meta = ["date", "categories"]
     twitter_cards = true
+    googleFontsLink = "no"
 
-# ページのテーマカラー
 [Params.style.vars]
   highlightColor = "#e22d30"
 
-# SNS等のユーザー名
 [Params.widgets.social]
   github = "ChanTsune"
 
