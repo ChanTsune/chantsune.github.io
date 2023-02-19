@@ -25,7 +25,13 @@ paginate = 20
     googleFontsLink = "no"
 
 [Params.style.vars]
-  highlightColor = "#e22d30"
+  highlightColor = "#dc3545"
+
+[Params.logo]
+  image = "img/avatar.png"
+
+[Params.widgets]
+  tags_counter = true
 
 [Params.widgets.social]
   github = "ChanTsune"
@@ -35,6 +41,12 @@ paginate = 20
     list = "right"
     single = "right"
     widgets = ["search", "recent", "categories", "taglist", "social"]
+
+[menu]
+  [[menu.main]]
+    identifier = "article"
+    name = "articles"
+    url = "/articles/"
 
 [markup]
   [markup.goldmark]
