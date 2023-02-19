@@ -6,3 +6,18 @@
     color: white;
     mix-blend-mode: difference;
 }
+
+.logo--mixed {
+  padding-top: 15px;
+  padding-right: 15px;
+  padding-left: 15px;
+  padding-bottom: 5px;
+}
+.logo--mixed .logo__item {
+  margin: 0;
+}
+.logo--mixed .logo__img {
+  max-width: 2rem;
+  max-width: 2rem;
+  filter: invert(83.5%);
+}
