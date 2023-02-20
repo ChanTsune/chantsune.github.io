@@ -19,6 +19,7 @@ googleAnalytics = "UA-157456952-1"
 
 [Params]
     customCSS = ["css/custom.css"]
+    customJs = ["https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"]
     copyright = "ChanTsune"
     readmore = true
     authorbox = true
