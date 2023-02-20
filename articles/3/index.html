@@ -1,0 +1,58 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Heroku CLIのコマンドまとめ - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="Heroku CLIのコマンドまとめ"><meta name=twitter:description content="よく使う Heroku CLIのコマンド 一度設定してしまうとあまり使わないので忘れないためにメモ ログインとログアウト heroku login heroku CLIでプロジェクトに関する操作"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>Heroku CLIのコマンドまとめ</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2018-09-27T00:55:19Z>September 27, 2018</time>
+<time class=meta__text datetime=2019-03-17T14:26:17Z>(最終更新: March 17, 2019)</time></div></div></header><div class="content post__content clearfix"><h2 id=よく使う-heroku-cliのコマンド>よく使う Heroku CLIのコマンド</h2><p>一度設定してしまうとあまり使わないので忘れないためにメモ</p><h4 id=ログインとログアウト>ログインとログアウト</h4><pre tabindex=0><code>heroku login
+</code></pre><p>heroku CLIでプロジェクトに関する操作をする時に必要<br>メールアドレスとパスワードを聞かれるのでherokuに登録した時のものを入力</p><pre tabindex=0><code>heroku logout
+</code></pre><h4 id=アプリケーションをブラウザで開く>アプリケーションをブラウザで開く</h4><pre tabindex=0><code>heroku open
+</code></pre><h4 id=メンテナンスモード>メンテナンスモード</h4><p>現在の状態を確認</p><pre tabindex=0><code>heroku maintenance
+</code></pre><p>メンテナンスモードにする</p><pre tabindex=0><code>heroku maintenance:on
+</code></pre><p>メンテナンスモードを無効にする</p><pre tabindex=0><code>heroku maintenance:off
+</code></pre><h4 id=ログの確認>ログの確認</h4><pre tabindex=0><code>heroku logs
+</code></pre><p>リアルタイムでログの確認をしたいときは<code>--tail</code>又は短縮形の<code>-t</code>をつける</p><pre tabindex=0><code>heroku logs --tail
+</code></pre><p>or</p><pre tabindex=0><code>heroku logs -t
+</code></pre><p>件数を指定してログを表示されるする場合は<code>-n</code>オプションをつける</p><pre tabindex=0><code>heroku logs -n 1000
+</code></pre><p>最新の1000件を表示</p><h4 id=リリースログの確認>リリースログの確認</h4><pre tabindex=0><code>heroku releases
+</code></pre><p>で過去のリリース履歴の確認ができます。</p><pre tabindex=0><code>=== my-heroku-app Releases - Current: v39
+v39  Deploy c1c856dc  XXX@XXX  2018/10/12 23:52:44 +0900 (~ 17h ago)
+v38  Deploy 11e631f7  XXX@XXX  2018/10/12 13:29:56 +0900
+v37  Deploy 3c99bdc8  XXX@XXX  2018/10/12 00:31:12 +0900
+v36  Deploy 403cf39c  XXX@XXX  2018/10/11 11:08:01 +0900
+v35  Deploy ea44cd37  XXX@XXX  2018/10/11 00:32:28 +0900
+v34  Deploy 1f6a308e  XXX@XXX  2018/10/10 20:40:15 +0900
+v33  Deploy e18b05d3  XXX@XXX  2018/10/08 23:45:10 +0900
+v32  Deploy 8bce99b1  XXX@XXX  2018/10/08 23:41:02 +0900
+v31  Deploy b5ffc4ea  XXX@XXX  2018/10/08 18:42:10 +0900
+v30  Deploy 86b68ec0  XXX@XXX  2018/10/08 18:16:19 +0900
+v29  Deploy 50b2469a  XXX@XXX  2018/10/07 22:48:34 +0900
+v28  Deploy 34df03da  XXX@XXX  2018/10/07 21:14:56 +0900
+v27  Deploy 3cec40c0  XXX@XXX  2018/10/07 18:20:53 +0900
+v26  Deploy 6f6a4f89  XXX@XXX  2018/10/07 17:17:06 +0900
+v25  Deploy d7a45d58  XXX@XXX  2018/10/05 15:48:38 +0900
+</code></pre><p>こんな感じで表示されます。</p><h5 id=ロールバックしたい>ロールバックしたい</h5><pre tabindex=0><code>heroku rollback v39 -a my-heroku-app Rolled back to v39
+</code></pre><p>戻したいバージョンを指定してロールバックすることも可能。<br><code>heroku rollback [バージョン番号]</code>
+ロールバックを行うとロールバックの履歴も残るため、ロールバックのロールバックも可能。</p><h4 id=ステータスを確認>ステータスを確認</h4><pre tabindex=0><code>heroku ps
+</code></pre><h4 id=サーバーを再起動>サーバーを再起動</h4><pre tabindex=0><code>heroku restart
+</code></pre><p>でサーバーを手動で再起動できます。</p><p>このコマンドを実行しなくともherokuのサーバーは一日に一回再起動します。</p><h4 id=postgresにログイン>Postgresにログイン</h4><p>herokuのデータベースはPostgresです。SQLなどでデータベースの中身を確認したい場合は<code>pg:psql</code>コマンドを使用します。</p><pre tabindex=0><code>heroku pg:psql
+</code></pre><p>ただしローカルの環境にpsqlがインストールされていないと利用できません。</p><h4 id=データベースを初期化>データベースを初期化</h4><pre tabindex=0><code>heroku pg:reset DATABASE
+</code></pre><p>DATABASE のところを置き換えるはない。<br>このまま、ターミナルで実行すればOK。</p><h4 id=heroku-git>heroku git</h4><pre tabindex=0><code>heroku git:remote -a アプリ名
+</code></pre><p>アプリ名はheroku上で作ったプロジェクトの名前<br>.gitのフォルダのある所でこのコマンドを実行するとそのリポジトリをherokuのappに紐づけることができる</p><h4 id=コマンドを実行する>コマンドを実行する</h4><pre tabindex=0><code>heroku run コマンド
+</code></pre><p><code>コマンド</code>部分にherokuサーバー上で実行したいコマンドを入力<br><code>--app アプリ名</code>オプションをつけるとそのアプリの環境でコマンドを実行できます。</p><p>実行に時間がかかるコマンドを実行するとまれにタイムアウトが発生してしまうことがあります。<br>そういう時は</p><pre tabindex=0><code>heroku run:detached コマンド
+</code></pre><p>とする事で回避できる場合があります。<br>ただし、この場合はコンソールには何も出力されない点だけ注意。</p><p>一応<code>heroku logs</code>コマンドで実行結果は見ることができます。</p><h4 id=環境変数を確認する>環境変数を確認する</h4><pre tabindex=0><code>heroku config
+</code></pre><h4 id=環境変数を追加する>環境変数を追加する</h4><pre tabindex=0><code>heroku config:set PASSWORD=pwd
+</code></pre><p>PASSWORDという環境変数を設定する場合の例</p><h4 id=環境変数の削除>環境変数の削除</h4><pre tabindex=0><code>heroku config:unset PASSWORD
+</code></pre><h4 id=タイムゾーンの変更>タイムゾーンの変更</h4><p>タイムゾーンを日本時間にする例</p><pre tabindex=0><code>heroku config:add TZ=Asia/Tokyo
+</code></pre><h4 id=ドメイン設定を確認>ドメイン設定を確認</h4><pre tabindex=0><code>heroku domains
+</code></pre><p>表示例</p><pre tabindex=0><code>=== e-tec-memo Heroku Domain
+e-tec-memo.herokuapp.com
+</code></pre><p>herokuのアプリごとにどのようなドメインが割り当てられているか確認できます。
+<code>--app アプリ名</code>で個別に確認することも可能。</p><h4 id=アドオンの確認>アドオンの確認</h4><pre tabindex=0><code>heroku adons
+</code></pre><h4 id=アドオンの追加>アドオンの追加</h4><pre tabindex=0><code>heroku adons:add アドオン名
+</code></pre><h4 id=アプリの一覧を表示>アプリの一覧を表示</h4><pre tabindex=0><code>heroku list
+</code></pre><h4 id=アプリを削除する>アプリを削除する</h4><pre tabindex=0><code>heroku apps:destroy --app アプリ名
+</code></pre><p>アプリ名を再入力すると削除完了する。</p><p>確認なしで削除する場合</p><pre tabindex=0><code>heroku apps:destroy --app アプリ名 --confirm アプリ名
+</code></pre><h4 id=複数アプリケーションの管理>複数アプリケーションの管理</h4><p>ほとんどのコマンドで<code>--app アプリ名</code>オプションをつけることで個別にコマンドを実行できます。</p><pre tabindex=0><code>heroku コマンド --app アプリ名
+</code></pre></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/heroku/ rel=tag>heroku</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/3/>Heroku CLIのコマンドまとめ</a></li><li class=widget__item><a class=widget__link href=/articles/2/>Pythonでの三項演算子</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
