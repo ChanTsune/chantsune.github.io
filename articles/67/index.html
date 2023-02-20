@@ -1,0 +1,226 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>これだけは知っておきたいDjangoテンプレートの基本文法 - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="これだけは知っておきたいDjangoテンプレートの基本文法"><meta name=twitter:description content="Djangoには便利な「テンプレート」と呼ばれる機能があります。 この機能を利用することで、webページの重複部分を繰り返して書く必要がなくな"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>これだけは知っておきたいDjangoテンプレートの基本文法</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2018-10-30T05:30:27Z>October 30, 2018</time></div></div></header><div class="content post__content clearfix"><p>Djangoには便利な「テンプレート」と呼ばれる機能があります。<br>この機能を利用することで、webページの重複部分を繰り返して書く必要がなくなり、とても効率的にHTMLの記述を行うことができます。</p><h2 id=変数>変数</h2><h3 id=テンプレートに変数を渡す>テンプレートに変数を渡す</h3><p>テンプレート内で変数を利用するにはpythonプログラムのviewでテンプレートに変数を渡す必要があります。</p><p>テンプレートへ変数を渡すには以下の方法を利用します。<br>views.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>viewFunction</span>(request):
+</span></span><span style=display:flex><span>  template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;template.html&#34;</span>
+</span></span><span style=display:flex><span>  context <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;variable&#34;</span> : <span style=color:#e6db74>&#34;hello world!&#34;</span>}
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> render(request,template_name,context)
+</span></span></code></pre></div><p><code>render</code>関数の第三引数にテンプレート内で利用したい変数を入れた辞書を渡します。<br>この時、辞書の中のキーの値がテンプレート内での変数名になります。</p><h3 id=変数の展開>変数の展開</h3><p>pythonプログラムのviewで渡した変数はDjangoテンプレート内で展開(HTMLの一部に)することができます。<br>変数の展開は以下の方法で行うことができます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-django data-lang=django><span style=display:flex><span><span style=color:#75715e>{{</span> <span style=color:#960050;background-color:#1e0010>変数名</span> <span style=color:#75715e>}}</span>
+</span></span></code></pre></div><p>変数名を二重の中カッコで囲います。</p><h3 id=実例>実例</h3><p>前の二つを踏まえて実際にテンプレートに文字列<code>"Hello World!"</code>が代入された<code>text</code>という名前の変数を渡してみることをやってみましょう。</p><p>まずは<code>views.py</code>の中身を確認します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>viewFunction</span>(request):
+</span></span><span style=display:flex><span>  template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;template.html&#34;</span>
+</span></span><span style=display:flex><span>  template_text <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello World!&#34;</span> <span style=color:#75715e># &lt;- テンプレートに渡したい文字列</span>
+</span></span><span style=display:flex><span>  context <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;text&#34;</span> : template_text} <span style=color:#75715e># &lt;- &#34;text&#34;がテンプレート内での変数名</span>
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>return</span> render(request,template_name,context) <span style=color:#75715e># &lt;-変数の入った辞書を第三引数に渡す</span>
+</span></span></code></pre></div><p>続いて実際に変数を展開する<code>template.html</code>です。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;template&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;{{ text }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>これが実際に展開されると以下のようになります。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;template&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;Hello World!&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>変数<code>text</code>が展開されて文字列<code>Hello World!</code>に置き換わっています。</p><p>つぎはテンプレートがさらに便利になるテンプレートタグの紹介です。</p><h2 id=テンプレートタグ>テンプレートタグ</h2><p>Djangoのテンプレートには「テンプレートタグ」と呼ばれるプログラミング言語の予約語に相当する機能を持ったものが存在します。</p><p>テンプレートタグは以下のような書き方をされます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-django data-lang=django><span style=display:flex><span>{% タグ名 %}
+</span></span></code></pre></div><p>タグ名を<code>{%</code>と<code>%}</code>(中カッコとパーセント記号)で囲って記述します。<br>以下に代表的なものをいくつか紹介します。</p><h3 id=条件分岐if>条件分岐(if)</h3><p>他のプログラミング言語でもおなじみの<code>if</code>、条件分岐です。<br><code>if</code>は以下のように利用します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if 条件 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件は真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><p>上記の場合は条件式が真の場合のみ<code>&lt;p>条件は真です&lt;/p></code>がHTML上に展開されます。<br>Pythonと比較したときの注意点は<code>{% endif %}</code>を利用して<code>if</code>の終了点を示すことがある点です。</p><p>Pythonと違いインデントで終了点を表現できないため<code>endif</code>が必要になります。</p><p>条件にはpython同様<code>==</code>や<code>!=</code>、<code>is</code>が利用できます。</p><p>また、変数を条件として利用することもできます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if variable == &#34;django&#34; %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件は真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><p>複数条件を続けたい場合は以下のように書くことで実現できます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if 条件1 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1は真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% elif 条件2 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件2は真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% else %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1も条件2も偽です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><p>さらにandやor、notを利用することもできます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if 条件 and 条件2 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1も条件2も真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% else %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1か条件2が偽です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if 条件1 or 条件2 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1か条件2が真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% else %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1も条件2も偽です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% if not 条件1 %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1は偽です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% else %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;条件1は真です&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><h3 id=繰り返しfor>繰り返し(for)</h3><p>こちらもおなじみ繰り返しの<code>for</code>です。<br>pythonのforと同様イテレータブルな要素をとることで繰り返し同じパーツを作ることが出来ます。</p><p><code>items</code>に<code>[ "hello", "world", "!" ]</code>のリストが入っていることを想定してみましょう。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% for item in items %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;{{ item }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>hr</span>&gt;
+</span></span><span style=display:flex><span>{% endfor %}
+</span></span></code></pre></div><p>上の例が展開されると</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;hello&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>hr</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;world&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>hr</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;!&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>hr</span>&gt;
+</span></span></code></pre></div><p>こうなります。</p><p><code>{% for 新しい変数名 in 変数名 %}</code>の文法です。<br>pythonと同じですね。<br><code>新しい変数名</code>を通常の変数と同じように二重の中カッコ(<code>{{ }}</code>)で展開することができます。</p><p>注意する点は、<code>if</code>と同様に終了点を示す必要があるため<code>endfor</code>で終了点を示してあげることです。</p><p>forについてもっと詳しく知りたい場合は、以下のページにまとめてありますのでよろしければどうぞ。</p><blockquote><p>[Django]知ってると便利なforで使える小技
+/article/20/</p></blockquote><h3 id=挿入include>挿入(include)</h3><p>別のテンプレートを挿入します。</p><p>各ページに同じパーツ、アイコン画像や外部のjsファイル、cssファイルを配置するときなどに便利です。</p><p>一か所を書き換えるだけですべてが書き換わることになるので、一部のページだけ書き換え忘れたり、何度も書き換え直したりしなくてよくなるため積極的に利用しましょう。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-django data-lang=django><span style=display:flex><span><span style=color:#75715e>{%</span> <span style=color:#66d9ef>include</span> <span style=color:#e6db74>&#34;other_template&#34;</span> <span style=color:#75715e>%}</span>
+</span></span></code></pre></div><h4 id=利用例>利用例</h4><p>一部のページのみjQueryを必要とする例を考えてみましょう。<br>js_parts.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://code.jquery.com/jquery-3.3.1.min.js&#34;</span> <span style=color:#a6e22e>integrity</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=&#34;</span> <span style=color:#a6e22e>crossorigin</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;anonymous&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span></code></pre></div><p>このファイルで他のページのjsファイルの管理を行います。</p><p>template1.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;template&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>    {% include &#34;js_parts.html&#34; %}
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;Hello World!&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>これが展開されると</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;template&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span> <span style=color:#a6e22e>src</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;https://code.jquery.com/jquery-3.3.1.min.js&#34;</span> <span style=color:#a6e22e>integrity</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=&#34;</span> <span style=color:#a6e22e>crossorigin</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;anonymous&#34;</span>&gt;&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;Hello World!&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>こうなります。</p><p>次に紹介する<code>extends</code>と<code>block</code>の組み合わせのほうが比較的汎用性が高いのであまり利用することはないかもしれませんが、覚えておいて損はないはずです。</p><h3 id=ブロック化block>ブロック化(block)</h3><p>webサイトには共通するパーツがかなりたくさんあると思います(ヘッダーやフッター、サイドバーなど)。
+この共通するパーツを効率よく管理するにはそれぞれをブロック化してしまうことです。<br>まあ、言ってみればテンプレートのテンプレートみたいなものです。</p><p>これには二つのテンプレートタグを利用します。<br>まずは、それぞれのページで共通する部分だけで構成された骨格となるHTMLファイルを作ります。<br>base.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;ヘッダーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;ボディーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;フッターの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>次に、これに要素を挿入したい部分をブロック化していきます。<br>base.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;{% block title %}{% endblock %}&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>    {% block header %}
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;ヘッダーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    {% endblock %}
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;ボディーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>    {% block footer %}
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;フッターの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    {% endblock %}
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>{% block ブロック名 %}</code>と<code>{% endblock %}</code>で囲ったところがひとつのブロックになります。</p><p>ブロック名は他のものと名前が被らなければなんでもかまいません。</p><p>上の例では<code>title</code>、<code>header</code>、<code>body</code>、<code>footer</code>という名前のブロックを作りました。</p><p>実際にこの骨格を利用するには<code>extends</code>というタグを使います。</p><p>以下は一例です。</p><p>index.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#34;base.html&#34; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}トップページ{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;トップページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endblock%}
+</span></span></code></pre></div><p><code>{% extends "骨格になるファイル名" %}</code>とファイルの先頭に記述することでそのファイルに骨格となるファイルを継承させます。</p><p>展開されると以下のようになります。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;トップページ&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;ヘッダーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;トップページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;フッターの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>{% block header %}</code>と<code>{% block footer %}</code>はindex.htmlで利用されなかったので骨格のbase.htmlのものがそのまま利用されています。</p><p>さらにindex.htmlを継承することでさらに具体的なカスタマイズを加えることもできます。</p><p>index.htmlに少し手を加えます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#34;base.html&#34; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}トップページ{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;トップページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block next %}
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% endblock%}
+</span></span></code></pre></div><p>bodyブロックの中にnextというブロックを作りました。</p><p>next.html</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#34;index.html&#34; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block next %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;ネクストページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endblock%}
+</span></span></code></pre></div><p>nextブロックの中に要素を足しました。</p><p>next.htmlは以下のように展開されます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>title</span>&gt;トップページ&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;ヘッダーの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>header</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;トップページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>p</span>&gt;ネクストページです&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;フッターの要素&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>footer</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>base.htmlとindex.htmlの両方を継承したので上記のようになりました。</p><p>このように継承したファイルをさらに継承することも可能です。</p><p><code>block</code>と<code>extends</code>をうまく利用することで共通部分を何度も書く必要がなくなるので管理がしやすく、また複雑なHTMLを見やすくすることができます。</p><p>デザインを変更するときも、一か所だけ書き換えればよいので、書き換え忘れるページが出ることがなく保守性も上がります。<br>DRY(Don&rsquo;t Repeat Yourself)が実現できていいですね。</p><h2 id=終わりに>終わりに</h2><p>以上、Djangoテンプレートの代表的な機能の紹介でした。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/django/ rel=tag>django</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/27/>PNGイメージのデータ構造を知ってみる(1)</a></li><li class=widget__item><a class=widget__link href=/articles/68/>[Django] プロジェクトの作成とアプリケーションの作成</a></li><li class=widget__item><a class=widget__link href=/articles/67/>これだけは知っておきたいDjangoテンプレートの基本文法</a></li><li class=widget__item><a class=widget__link href=/articles/66/>pytorchで機械学習(導入編)</a></li><li class=widget__item><a class=widget__link href=/articles/64/>ページ内リンクにスクロールアニメーションをつける</a></li><li class=widget__item><a class=widget__link href=/articles/62/>[Django] ログイン必須のページを作る</a></li><li class=widget__item><a class=widget__link href=/articles/63/>[Django] テンプレートで文字を切り詰めたい</a></li><li class=widget__item><a class=widget__link href=/articles/61/>[Django] 404ページをカスタマイズする</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (15)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (6)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
