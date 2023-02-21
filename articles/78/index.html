@@ -1,0 +1,521 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>[Django] Bootstrapを利用したwebデザイン - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="[Django] Bootstrapを利用したwebデザイン"><meta name=twitter:description content="Djangoでブログを作る-最終回-です。 シリーズ一覧 プロジェクトの作成とアプリケーションの作成 view関数の書き方 URLの指定の仕方(UR"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>[Django] Bootstrapを利用したwebデザイン</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2018-11-23T01:11:26Z>November 23, 2018</time>
+<time class=meta__text datetime=2021-10-22T06:56:28Z>(最終更新: October 22, 2021)</time></div></div></header><div class="content post__content clearfix"><p>Djangoでブログを作る-最終回-です。</p><h3 id=シリーズ一覧>シリーズ一覧</h3><blockquote><ol><li><a href=/articles/68/>プロジェクトの作成とアプリケーションの作成</a></li><li><a href=/articles/69/>view関数の書き方</a></li><li><a href=/articles/70/>URLの指定の仕方(URLディスパッチャ)</a></li><li><a href=/articles/71/>データベース(モデル)の設定</a></li><li><a href=/articles/72/>記事の投稿ページの作成</a></li><li><a href=/articles/73/>記事の一覧ページと詳細ページの追加</a></li><li><a href=/articles/74/>記事の編集ページと記事の削除機能の追加</a></li><li><a href=/articles/75/>いいね機能の追加</a></li><li><a href=/articles/77/>コメント機能の追加</a></li><li><a href=/articles/78/>Bootstrapを利用したwebデザイン</a> &lt;- 今回</li></ol></blockquote><p>「Bootstrapを利用したwebデザイン」なんてつけてますが、おまけ程度にしかやらないのでそんなに期待しないでくださいね。<br>基本的に筆者はデザイン得意じゃないんです&mldr;</p><h2 id=bootstrapのグリッドシステム>Bootstrapのグリッドシステム</h2><p>Bootstrapには簡単にデザインを作れるように<strong>グリッドシステム</strong>が用意されています。<br>Bootstrapで用意されているグリッドシステムは、一つの行(row)を12列(colume)に分割して、一つの要素にどれくらいの行を割り振るかで表現されます。</p><p>イメージとしては以下の図のような感じです。<br><img src="https://drive.google.com/uc?export=view&id=1TN9zCozfO1EF_7KF7Mx220_D0ClqYWJR" alt=グリッドシステムのイメージ図>
+具体的な利用例としては以下のような感じです。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      すべての要素を均等に三分割
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      すべての要素を均等に三分割
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      すべての要素を均等に三分割
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-2&#34;</span>&gt;
+</span></span><span style=display:flex><span>      要素を　1　: 
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-10&#34;</span>&gt;
+</span></span><span style=display:flex><span>      　5　に分割
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span></code></pre></div><p>グリッドシステムを利用したい要素全体を<code>class</code>に<code>container</code>を与えた要素で囲みます。</p><p><code>class</code>に<code>row</code>を与えるとその要素は行としてふるまいます。</p><p>その中に<code>class</code>に<code>col-数字</code>を与えた要素を配置するとその行の中でXX列分の大きさの要素になります。<br>この時に<code>数字</code>の合計が<code>12</code>になるようにします。<br>12より小さい場合は問題ないのですが12より大きくなるとはみ出した部分が表示されなくなってしまったりします(カラム落ち)。</p><p>上記のコードでは行を均等に三分割する例と1:5に分割する例を挙げています。</p><h3 id=レスポンシブデザイン>レスポンシブデザイン</h3><p>同じサイトでもアクセスする端末が変わるとデザインが変わるサイトってありますよね。</p><p>あれは、多くの場合画面の大きさに合わせて要素の配置の仕方を変えています。</p><p>Bootstrapのグリッドシステムではこれを簡単に実現できます。</p><p>PCで当サイトをご覧の方はブラウザの横幅を変えてみてください。<br>大きさが変わると要素の配置が変わるはずです。</p><p>これもBootstrapで実現しています。</p><p>先ほど<code>col-数字</code>で行の分割ができるとお伝えしましたが、これに加えて画面の大きさを指定するフレーズを加えれば、画面の大きさに応じて分割幅を変えることができます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      スマートフォンなら縦一列
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      タブレットなら横に二つ
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      PCなら横に三つ
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      スマートフォンなら縦一列
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>      タブレットなら横に二つ
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span></code></pre></div><p><code>col-数字</code>が大体、スマートフォンサイズの画面。<br><code>col-md-数字</code>とすることでタブレットサイズの画面。<br><code>col-lg-数字</code>とすることでPCサイズの画面に対して大きさを指定できます。</p><p>上の例ではスマートフォンサイズでは縦一列に、タブレットサイズなら横二つ、PCサイズなら横三つになるように指定しています。</p><p>このように一つの要素に対して複数<code>class</code>を設定することで表示幅を切り替えています。</p><h4 id=ブレークポイント一覧>ブレークポイント一覧</h4><p>細かい数字などが気になる人はこちらをどうぞ</p><blockquote><p><a href=/articles/284/>Bootrtrap4のブレークポイント一覧</a></p></blockquote><h2 id=デザインを適用する>デザインを適用する</h2><h3 id=bootstrapの入手>Bootstrapの入手</h3><p>以下のリンクからBootstrapをダウンロードできます。</p><blockquote><p>Download · Bootstrap<br><a href=https://getbootstrap.com/docs/4.1/getting-started/download/>https://getbootstrap.com/docs/4.1/getting-started/download/</a></p></blockquote><h3 id=静的ファイル>静的ファイル</h3><p>入手したBootstrap(cssファイル)はテンプレート(HTML)のようにDjangoによって動的に中身が書き換わるわけではありません。</p><p>このようなファイルを静的ファイルといいます。</p><p>cssファイルやjavascript、画像ファイルなどが多くの場合は静的ファイルです。</p><p>Djangoで、これらをテンプレート(HTML)に読み込ませるには、少し手順が必要です。</p><p>アプリケーションのディレクトリの中に<code>static</code>というディレクトリを作成します。</p><pre tabindex=0><code>myblog
+├── blog
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── models.py
+│   ├── static # 新しく作る
+│   ├── templates
+│   │   └── blog
+│   │       ├── article_all.html
+│   │       ├── edit.html
+│   │       ├── index.html
+│   │       ├── new.html
+│   │       └── view_article.html
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── manage.py
+└── myblog
+    ├── __init__.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py
+</code></pre><p>この中に静的ファイルを配置します。</p><p>今回、ダウンロードしてきたBootstrapのファイル群は以下のように配置しました。</p><pre tabindex=0><code>myblog/blog/static/
+├── css
+│   ├── bootstrap.css
+│   ├── bootstrap.css.map
+│   ├── bootstrap-grid.css
+│   ├── bootstrap-grid.css.map
+│   ├── bootstrap-grid.min.css
+│   ├── bootstrap-grid.min.css.map
+│   ├── bootstrap.min.css
+│   ├── bootstrap.min.css.map
+│   ├── bootstrap-reboot.css
+│   ├── bootstrap-reboot.css.map
+│   ├── bootstrap-reboot.min.css
+│   └── bootstrap-reboot.min.css.map
+└── js
+    ├── bootstrap.bundle.js
+    ├── bootstrap.bundle.js.map
+    ├── bootstrap.bundle.min.js
+    ├── bootstrap.bundle.min.js.map
+    ├── bootstrap.js
+    ├── bootstrap.js.map
+    ├── bootstrap.min.js
+    └── bootstrap.min.js.map
+</code></pre><p><code>static</code>の中にそのまま解凍しただけです。</p><p>設置したファイルは<strong>テンプレートの一行目に<code>{% load static %}</code>を加える</strong>ことで利用できるようになります。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load staticfiles %} <span style=color:#75715e>&lt;!-- 一行目に追加 --&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>これを忘れるとエラーを吐かれるので注意してください。</p><p><code>{% load static %}</code>を加えたうえで</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-django data-lang=django><span style=display:flex><span><span style=color:#75715e>{%</span> <span style=color:#66d9ef>static</span> <span style=color:#e6db74>&#39;静的ファイルへのstatic以下のパス&#39;</span> <span style=color:#75715e>%}</span>
+</span></span></code></pre></div><p>(staticは含めない)と記述することで読み込めます。</p><p>今回の例だと</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>&lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span></code></pre></div><p>こんな感じになります。</p><h2 id=デザインを適用する-1>デザインを適用する</h2><p>というわけで、Bootstrapを使ってデザインを整えました。<br><code>index.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;my-blog-index&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;とっぷぺーじ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-dark&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;new&#39; %}&#34;</span>&gt;新規記事の投稿&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-dark&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;article_all&#39; %}&#34;</span>&gt;投稿された記事一覧&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>new.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;my-blog-new&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;新規記事の投稿ページ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;post&#34;</span>&gt;
+</span></span><span style=display:flex><span>      {% csrf_token %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;記事のタイトル&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span>&gt;記事の本文&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span>&gt;&lt;/<span style=color:#f92672>textarea</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;投稿&lt;/<span style=color:#f92672>button</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>edit.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;my-blog-edit&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;記事の編集ページ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;post&#34;</span>&gt;
+</span></span><span style=display:flex><span>      {% csrf_token %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;記事のタイトル&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span> <span style=color:#a6e22e>value</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{{ article.title }}&#34;</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span><span style=color:#960050;background-color:#1e0010>　</span><span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span>&gt;記事の本文&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span>&gt;{{ article.text }}&lt;/<span style=color:#f92672>textarea</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;更新&lt;/<span style=color:#f92672>button</span>&gt;&lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-warning&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;view_article&#39; article.pk%}&#34;</span>&gt;編集の取りやめ&lt;/<span style=color:#f92672>a</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>article_all.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;article all&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;投稿された記事一覧&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>      {% for article in articles %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card&#34;</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card-body&#34;</span>&gt;
+</span></span><span style=display:flex><span>            &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>              &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>                &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-primary&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;view_article&#39; article.pk %}&#34;</span>&gt;{{ article.title }}&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>              &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>              &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>                &lt;<span style=color:#f92672>small</span>&gt;[{{ article.posted_at }}]&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>              &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>              &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-6&#34;</span>&gt;
+</span></span><span style=display:flex><span>                &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-primary&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;edit&#39; article.pk %}&#34;</span>&gt;編集&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>              &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>              &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-6&#34;</span>&gt;
+</span></span><span style=display:flex><span>                &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-danger&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;delete&#39; article.pk %}&#34;</span>&gt;削除&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>              &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>            &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>          &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      {% endfor %}
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p><code>view_article.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;{{ article.title }}&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>api_like</span>() {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>api_url</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;{% url &#39;api_like&#39; article.pk %}&#34;</span>;
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>btn</span> <span style=color:#f92672>=</span> document.<span style=color:#a6e22e>getElementById</span>(<span style=color:#e6db74>&#34;like&#34;</span>);
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>request</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>XMLHttpRequest</span>();
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>onreadystatechange</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>          <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>readyState</span> <span style=color:#f92672>===</span> <span style=color:#ae81ff>4</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>===</span> <span style=color:#ae81ff>200</span>) {
+</span></span><span style=display:flex><span>              <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>received_data</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>parse</span>(<span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>responseText</span>);
+</span></span><span style=display:flex><span>              <span style=color:#a6e22e>btn</span>.<span style=color:#a6e22e>innerText</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>received_data</span>.<span style=color:#a6e22e>like</span>;
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>open</span>(<span style=color:#e6db74>&#34;GET&#34;</span>, <span style=color:#a6e22e>api_url</span>);
+</span></span><span style=display:flex><span>      <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>send</span>();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;article_all&#39; %}&#34;</span>&gt;一覧へ戻る&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;{{ article.title }}&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>small</span>&gt;投稿日時 : {{ article.posted_at }}&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>small</span>&gt;最終更新 : {{ article.last_modify }}&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>p</span>&gt;{{ article.text }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary text-white&#34;</span> <span style=color:#a6e22e>onclick</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;api_like()&#34;</span>&gt;&lt;<span style=color:#f92672>span</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-white&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;like&#34;</span>&gt;{{ article.like }}&lt;/<span style=color:#f92672>span</span>&gt;いいね！&lt;/<span style=color:#f92672>a</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;POST&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;com&#34;</span>&gt;コメント&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>      {% csrf_token %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;com&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span> <span style=color:#a6e22e>required</span>&gt;&lt;/<span style=color:#f92672>textarea</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;投稿&lt;/<span style=color:#f92672>button</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    {% for comment in article.comments.all %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card-body&#34;</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>span</span>&gt;{{ comment.text }}&lt;/<span style=color:#f92672>span</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>span</span>&gt;-&lt;<span style=color:#f92672>small</span>&gt;{{ comment.posted_at }}&lt;/<span style=color:#f92672>small</span>&gt;&lt;/<span style=color:#f92672>span</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    {% empty %}
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>p</span>&gt;コメントはありません&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>    {% endfor %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>デザインが超手抜きなのは許してください。<br>冒頭でも述べましたが、筆者はデザインが得意じゃないんです&mldr;<br><del>そもそも致命的にセンスがない&mldr;</del></p><h2 id=テンプレートを継承する>テンプレートを継承する</h2><p>とりあえず勢いでデザインをしてみましたが、ものすごく長いコードになりました。</p><p>よく見なくても<em><strong>同じようなことがたくさん</strong></em>書いてあります。</p><p><em><strong>同じことがたくさん書いてある</strong></em></p><p>これは良くないですね。</p><p>サイトのデザインを更新するときに何度もコピペで直さないといけません。</p><p>コピペでコードを管理していると絶対にどこか書き換え忘れます。</p><p><strong>コピペ、ダメ、ゼッタイ。</strong></p><p>なので、各ページで共通する部分は一か所で管理するようにします。</p><p><code>{% block %}</code>タグと<code>{% extends %}</code>タグを利用します。</p><p>詳しい利用方法は以下をご覧ください。</p><blockquote><p><a href=/articles/67/#%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E5%8C%96(block)>[Django] これだけは知っておきたいテンプレートの基本文法</a></p></blockquote><p>まずは、共通の部分を管理する骨格となるテンプレートを作成します。<br><code>templates/base/base.html</code></p><p><code>base.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load static %}
+</span></span><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;{% block title %}{% endblock %}&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>link</span> <span style=color:#a6e22e>rel</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;stylesheet&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text/css&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% static &#39;css/bootstrap.min.css&#39; %}&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  {% block css %}{% endblock %}
+</span></span><span style=display:flex><span>  {% block js %}{% endblock %}
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>nav</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar navbar-dark bg-dark&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>ul</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;navbar-nav&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;index&#39; %}&#34;</span>&gt;トップページ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>      {% block nav_item %}{% endblock %}
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>ul</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>nav</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;container&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;jumbotron&#34;</span>&gt;
+</span></span><span style=display:flex><span>      {% block jumbotron %}{% endblock %}
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    {% block body %}
+</span></span><span style=display:flex><span>    {% endblock %}
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>としましょう。</p><p>要素を挿入したい所に<code>{% block %}</code>タグをつけています。</p><p>これを継承して、それぞれのページを書き直していきます。</p><p>継承先のファイルでは<code>{% extends %}</code>タグを使って、継承元を指定します。</p><p><code>index.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#39;base/base.html&#39; %}<span style=color:#75715e>&lt;!-- 継承元のファイルを指定 --&gt;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}my-blog-index{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block jumbotron %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;とっぷぺーじ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-dark&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;new&#39; %}&#34;</span>&gt;新規記事の投稿&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-dark&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;article_all&#39; %}&#34;</span>&gt;投稿された記事一覧&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span></code></pre></div><p><code>edit.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#39;base/base.html&#39; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}my-blog-new{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block jumbotron %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;記事の編集ページ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;post&#34;</span>&gt;
+</span></span><span style=display:flex><span>  {% csrf_token %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;記事のタイトル&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span> <span style=color:#a6e22e>value</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{{ article.title }}&#34;</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span><span style=color:#960050;background-color:#1e0010>　</span><span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span>&gt;記事の本文&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span>&gt;{{ article.text }}&lt;/<span style=color:#f92672>textarea</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;更新&lt;/<span style=color:#f92672>button</span>&gt;&lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-warning&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;view_article&#39; article.pk%}&#34;</span>&gt;編集の取りやめ&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span></code></pre></div><p><code>view_article.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#39;base/base.html&#39; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}{{ article.title }}{% endblock %}
+</span></span><span style=display:flex><span>{% block js %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>api_like</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>api_url</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;{% url &#39;api_like&#39; article.pk %}&#34;</span>;
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>btn</span> <span style=color:#f92672>=</span> document.<span style=color:#a6e22e>getElementById</span>(<span style=color:#e6db74>&#34;like&#34;</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>request</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>XMLHttpRequest</span>();
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>onreadystatechange</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span> () {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>readyState</span> <span style=color:#f92672>===</span> <span style=color:#ae81ff>4</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>status</span> <span style=color:#f92672>===</span> <span style=color:#ae81ff>200</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>received_data</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>parse</span>(<span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>responseText</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>btn</span>.<span style=color:#a6e22e>innerText</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>received_data</span>.<span style=color:#a6e22e>like</span>;
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>open</span>(<span style=color:#e6db74>&#34;GET&#34;</span>, <span style=color:#a6e22e>api_url</span>);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>request</span>.<span style=color:#a6e22e>send</span>();
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>script</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block nav_item %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>li</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-item&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;nav-link&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;article_all&#39; %}&#34;</span>&gt;一覧へ戻る&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>li</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block jumbotron %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;{{ article.title }}&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>small</span>&gt;投稿日時 : {{ article.posted_at }}&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>small</span>&gt;最終更新 : {{ article.last_modify }}&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;{{ article.text }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary text-white&#34;</span> <span style=color:#a6e22e>onclick</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;api_like()&#34;</span>&gt;&lt;<span style=color:#f92672>span</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-white&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;like&#34;</span>&gt;{{ article.like }}&lt;/<span style=color:#f92672>span</span>&gt;いいね！&lt;/<span style=color:#f92672>a</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;POST&#34;</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;com&#34;</span>&gt;コメント&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  {% csrf_token %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;com&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span> <span style=color:#a6e22e>required</span>&gt;&lt;/<span style=color:#f92672>textarea</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;投稿&lt;/<span style=color:#f92672>button</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% for comment in article.comments.all %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card-body&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>span</span>&gt;{{ comment.text }}&lt;/<span style=color:#f92672>span</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>span</span>&gt;-&lt;<span style=color:#f92672>small</span>&gt;{{ comment.posted_at }}&lt;/<span style=color:#f92672>small</span>&gt;&lt;/<span style=color:#f92672>span</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>{% empty %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;コメントはありません&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endfor %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span></code></pre></div><p><code>article_all.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#39;base/base.html&#39; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}article all{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block jumbotron %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;投稿された記事一覧&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>  {% for article in articles %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12 col-md-6 col-lg-4&#34;</span>&gt;
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card&#34;</span>&gt;
+</span></span><span style=display:flex><span>      &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;card-body&#34;</span>&gt;
+</span></span><span style=display:flex><span>        &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;row&#34;</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>            &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-primary&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;view_article&#39; article.pk %}&#34;</span>&gt;{{ article.title }}&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>          &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-12&#34;</span>&gt;
+</span></span><span style=display:flex><span>            &lt;<span style=color:#f92672>small</span>&gt;[{{ article.posted_at }}]&lt;/<span style=color:#f92672>small</span>&gt;
+</span></span><span style=display:flex><span>          &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-6&#34;</span>&gt;
+</span></span><span style=display:flex><span>            &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-primary&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;edit&#39; article.pk %}&#34;</span>&gt;編集&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>          &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>          &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;col-6&#34;</span>&gt;
+</span></span><span style=display:flex><span>            &lt;<span style=color:#f92672>a</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text-danger&#34;</span> <span style=color:#a6e22e>href</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;{% url &#39;delete&#39; article.pk %}&#34;</span>&gt;削除&lt;/<span style=color:#f92672>a</span>&gt;
+</span></span><span style=display:flex><span>          &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>        &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>      &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>    &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  &lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>  {% endfor %}
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>div</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span></code></pre></div><p><code>new.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% extends &#39;base/base.html&#39; %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block title %}my-blog-new{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block jumbotron %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>h1</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;h3&#34;</span>&gt;新規記事の投稿ページ&lt;/<span style=color:#f92672>h1</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% block body %}
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>form</span> <span style=color:#a6e22e>action</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;&#34;</span> <span style=color:#a6e22e>method</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;post&#34;</span>&gt;
+</span></span><span style=display:flex><span>  {% csrf_token %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;記事のタイトル&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>input</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;title_input&#34;</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>label</span> <span style=color:#a6e22e>for</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span>&gt;記事の本文&lt;/<span style=color:#f92672>label</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>textarea</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;form-control&#34;</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;text_area&#34;</span> <span style=color:#a6e22e>cols</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;30&#34;</span> <span style=color:#a6e22e>rows</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;10&#34;</span>&gt;&lt;/<span style=color:#f92672>textarea</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;&lt;<span style=color:#f92672>button</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;btn btn-primary&#34;</span> <span style=color:#a6e22e>type</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;submit&#34;</span>&gt;投稿&lt;/<span style=color:#f92672>button</span>&gt;&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>form</span>&gt;
+</span></span><span style=display:flex><span>{% endblock %}
+</span></span></code></pre></div><p>慣れていないとかなり読みづらいかもしれませんが、重複部分がなくなってすっきりしました。</p><p>同じパーツは一か所で管理しているので、デザインを変更するときも一か所だけ書き換えればOKです。</p><h2 id=最後に>最後に</h2><p>シリーズを最後まで読んでいただきありがとうございます。</p><p>全10回にわたってDjangoでブログをつくるまでを紹介してみたわけですが、Djangoの機能をすべて紹介できたわけではありません。<br>Djangoには他にも便利な機能がたくさんあります。</p><p>当サイトにもいくつか紹介がありますのでよろしければご覧ください。</p><p>また、今回作成したコードはGitHubに上げてあるので適宜利用してください。</p><blockquote><p><a href=https://github.com/ChanTsune/django-blog-sample-for-iniad-students>https://github.com/ChanTsune/django-blog-sample-for-iniad-students</a></p></blockquote><p>コードコメントでの解説は頑張ったつもりなので、参考にしてみてください。</p><p>皆様のお力になれれば幸いです。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/bootstrap/ rel=tag>bootstrap</a></li><li class=tags__item><a class="tags__link btn" href=/tags/django/ rel=tag>django</a></li><li class=tags__item><a class="tags__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ rel=tag>Djangoでブログを作ろう</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/78/>[Django] Bootstrapを利用したwebデザイン</a></li><li class=widget__item><a class=widget__link href=/articles/77/>[Django] コメント機能の追加</a></li><li class=widget__item><a class=widget__link href=/articles/75/>[Django] いいね機能の追加</a></li><li class=widget__item><a class=widget__link href=/articles/74/>[Django] 記事の編集ページと記事の削除機能の追加</a></li><li class=widget__item><a class=widget__link href=/articles/73/>[Django] 記事の一覧ページと詳細ページの追加</a></li><li class=widget__item><a class=widget__link href=/articles/76/>[Django] 2系から導入されたパスコンバータとは</a></li><li class=widget__item><a class=widget__link href=/articles/72/>[Django] 記事の投稿ページの作成</a></li><li class=widget__item><a class=widget__link href=/articles/71/>[Django] データベース(モデル)の設定</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (25)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (6)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
