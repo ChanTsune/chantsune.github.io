@@ -1,0 +1,80 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>ラズパイゼロにpyenvでpythonの環境構築する話 - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="ラズパイゼロにpyenvでpythonの環境構築する話"><meta name=twitter:description content="どこのご家庭にも一個や二個は余っている(？)ラズパイが自宅にもあったので、とりあえずPythonの環境を作るかってことでpyenvを使って環"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>ラズパイゼロにpyenvでpythonの環境構築する話</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2019-02-25T11:13:15Z>February 25, 2019</time>
+<time class=meta__text datetime=2019-05-18T10:20:34Z>(最終更新: May 18, 2019)</time></div></div></header><div class="content post__content clearfix"><p>どこのご家庭にも一個や二個は余っている(？)ラズパイが自宅にもあったので、とりあえずPythonの環境を作るかってことでpyenvを使って環境構築をした時の話です。</p><h3 id=環境>環境</h3><p>ラズパイ : Raspberry Pi Zero WH<br>OS : raspbian 9.4</p><h3 id=事前準備>事前準備</h3><p><code>pyenv</code>のインストールの前にPythonのコンパイル時に必要になるもパッケージをインストールしておきます。</p><pre tabindex=0><code>sudo apt install libssl-dev libbz2-dev libreadline-dev libsqlite3-dev zlib1g-dev libffi-dev gcc make
+</code></pre><p>これを忘れてもpyenvのインストールは出来るのですが、Pythonのインストール時に悲しい出来事が起こります。(詳細は記事後半に書いてあります。)</p><h3 id=pyenvのインストール>pyenvのインストール</h3><pre tabindex=0><code>git clone https://github.com/yyuu/pyenv.git ~/.pyenv
+echo &#39;export PYENV_ROOT=&#34;${HOME}/.pyenv&#34;&#39; &gt;&gt; ~/.bashrc
+echo &#39;if [ -d &#34;${PYENV_ROOT}&#34; ]; then&#39; &gt;&gt; ~/.bashrc
+echo &#39;export PATH=${PYENV_ROOT}/bin:$PATH&#39; &gt;&gt; ~/.bashrc
+echo &#39;eval &#34;$(pyenv init -)&#34;&#39; &gt;&gt; ~/.bashrc
+echo &#39;fi&#39; &gt;&gt; ~/.bashrc
+source ~/.bashrc
+</code></pre><p><code>git clone</code>は説明しなくてもわかると思いますが<code>pyenv</code>を手元に持ってきています。<br><code>echo ~~</code>で<code>pyenv</code>の設定を<code>.bashrc</code>に追記しています。<br><code>source ~/.bashrc</code>でbashを読み込み直しています。</p><pre tabindex=0><code>pyenv --version
+</code></pre><p>を実行して</p><pre tabindex=0><code>pyenv 1.2.9-16-g9baa6efe
+</code></pre><p><code>pyenv</code>のバージョンが表示されればOK</p><h3 id=pythonのインストール>pythonのインストール</h3><p>そもそもraspbianにはPythonが入っているわけですが、ちょっとバージョンが古かったのでどうせなら新しいPythonを使おうってことでこんなことをやっています。</p><pre tabindex=0><code>pyenv install --list
+</code></pre><p>これでインストール可能なPythonのバージョンが取得できるので、お好きなものを選んでください。</p><p>今回は実行時点て最新だった<code>3.7.2</code>をインストールします。</p><pre tabindex=0><code>pyenv install 3.7.2
+</code></pre><p>コンパイルに一時間近くかかるので気長に待ちましょう。<br>sshで接続している場合は、途中で接続が切れるとインストールが中断されてしまうので<code>nohup</code>を使っておきましょう。</p><pre tabindex=0><code>nohup pyenv install 3.7.2 &amp;
+</code></pre><pre tabindex=0><code>Downloading Python-3.7.2.tar.xz...
+-&gt; https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz
+Installing Python-3.7.2...
+Installed Python-3.7.2 to /home/pi/.pyenv/versions/3.7.2
+</code></pre><p>こんな感じでインストールされます。</p><p>インストールが完了したら早速Python3.7.2が実行できるようにしましょう。</p><p>全体で使うPythonのバージョンを<code>3.7.2</code>に変更</p><pre tabindex=0><code>pyenv global 3.7.2
+</code></pre><p>変更されたか確認してみます。</p><pre tabindex=0><code>python --version
+</code></pre><pre tabindex=0><code>Python 3.7.2
+</code></pre><p>指定したバージョンが表示されれば大丈夫です。</p><p>元に戻すには</p><pre tabindex=0><code>pyenv global system
+</code></pre><p>でOK</p><h3 id=最後に>最後に</h3><p>実は筆者は今回<code>pyenv</code>でPythonをインストールするときに失敗を犯しまして、具体的には、Pythonのコンパイル時に必要なパッケージをインストールする前に<code>pyenv install ~~</code>コマンドを実行したのです。<br>すると以下のようなエラーが出てコンパイルが失敗しました。</p><pre tabindex=0><code>Downloading Python-3.7.2.tar.xz...
+-&gt; https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tar.xz
+Installing Python-3.7.2...
+
+WARNING: The Python bz2 extension was not compiled. Missing the bzip2 lib?
+WARNING: The Python readline extension was not compiled. Missing the GNU readline lib?
+ERROR: The Python ssl extension was not compiled. Missing the OpenSSL lib?
+
+Please consult to the Wiki page to fix the problem.
+https://github.com/pyenv/pyenv/wiki/Common-build-problems
+
+BUILD FAILED (Raspbian 9.4 using python-build 1.2.9-16-g9baa6efe)
+
+Inspect or clean up the working tree at /tmp/python-build.20190225171731.2526
+Results logged to /tmp/python-build.20190225171731.2526.log
+
+Last 10 log lines:
+    install|*) ensurepip=&#34;&#34; ;; \
+  esac; \
+   ./python -E -m ensurepip \
+    $ensurepip --root=/ ; \
+fi
+Looking in links: /tmp/tmp0bt1vlf_
+Collecting setuptools
+Collecting pip
+Installing collected packages: setuptools, pip
+Successfully installed pip-18.1 setuptools-40.6.2
+</code></pre><p>一時間くらいコンパイルしていたのが水の泡&mldr;</p><p>皆さんにはこんな悲しい思いをして欲しくないので、記事で紹介してある内容は、成功した時の内容です。</p><p>悲しい出来事はありましたが、無事ラズパイ上でpyenvを利用したPythonの環境構築ができました。</p><h4 id=参考記事>参考記事</h4><p><a href=https://qiita.com/utgwkk/items/bf282ca95f64ef7dd594>https://qiita.com/utgwkk/items/bf282ca95f64ef7dd594</a>
+<a href=https://qiita.com/rysk92/items/878fddbf23262628d89e>https://qiita.com/rysk92/items/878fddbf23262628d89e</a></p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/pyenv/ rel=tag>pyenv</a></li><li class=tags__item><a class="tags__link btn" href=/tags/python/ rel=tag>python</a></li><li class=tags__item><a class="tags__link btn" href=/tags/raspberry-pi/ rel=tag>Raspberry Pi</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/124/>[Django] カスタムユーザーを利用する</a></li><li class=widget__item><a class=widget__link href=/articles/82/>Swiftにインクリメント(++)、デクリメント(--)を復活させる</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/83/>[Django] Http Headerを取得、追加する方法</a></li><li class=widget__item><a class=widget__link href=/articles/161/>[Django] リダイレクト時のステータスコードを307、308にする</a></li><li class=widget__item><a class=widget__link href=/articles/122/>django-debug-toolbarが動かない</a></li><li class=widget__item><a class=widget__link href=/articles/121/>Django開発の必須パッケージ、django-debug-toolbarの導入</a></li><li class=widget__item><a class=widget__link href=/articles/171/>ラズパイゼロにpyenvでpythonの環境構築する話</a></li><li class=widget__item><a class=widget__link href=/articles/169/>[Django] フォームでログイン認証の時と同じようにnext=URLが使えるようにする</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c/c++/ title=c/c++>c/c++ (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (39)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django-boost/ title=Django-Boost>Django-Boost (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%82%AF%E3%83%A9%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%83%93%E3%83%A5%E3%83%BC%E3%81%AE%E3%81%99%E3%83%BD%E3%82%81/ title=Djangoクラスベースビューのすヽめ>Djangoクラスベースビューのすヽめ (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gitlab/ title=gitlab>gitlab (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (8)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/opencv/ title=OpenCV>OpenCV (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pyenv/ title=pyenv>pyenv (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (14)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/raspberry-pi/ title="Raspberry Pi">Raspberry Pi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ssh/ title=ssh>ssh (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift/ title=swift>swift (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/unix/ title=unix>unix (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
