@@ -1,0 +1,124 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>UNIXプログラミング入門~プロセス編(3/4)~ - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="UNIXプログラミング入門~プロセス編(3/4)~"><meta name=twitter:description content="c/c++でunix系osプログラミングを行うときに使うunistd.hやその周辺のライブラリのお話その5です。 このメモでは、プロセス周りの"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>UNIXプログラミング入門~プロセス編(3/4)~</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2019-01-16T08:32:34Z>January 16, 2019</time></div></div></header><div class="content post__content clearfix"><p>c/c++でunix系osプログラミングを行うときに使う<code>unistd.h</code>やその周辺のライブラリのお話その5です。<br>このメモでは、プロセス周りのシステムコールAPIに関して取り上げます。</p><h2 id=プロセス間通信>プロセス間通信</h2><p>プロセスは資源を共有していないので、プロセス間でデータをやりとりするために少し特殊な方法が必要です。</p><p>ここでは、パイプ(単方向通信チャンネル)を利用した方法を紹介します。</p><p><code>unistd.h</code>に宣言されている<code>pipe(2)</code>関数を利用します。</p><p><code>pipe(2)</code>関数は<code>unistd.h</code>に以下のように宣言されています。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>pipe</span>(<span style=color:#66d9ef>int</span> fildes[<span style=color:#ae81ff>2</span>]);
+</span></span></code></pre></div><p>第一引数に<code>int</code>の配列を渡します。<br>配列の<code>0</code>番目に読み出し用の、配列の<code>1</code>番目に書き込み用のファイルディスクリプタが渡されます。</p><p>戻り値はパイプの作成に成功した時に<code>0</code>、失敗した時に<code>-1</code>が返されます。</p><p>一般的に以下のように利用されます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#define BUFLEN 128
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define READ 0
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define WRITE 1
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> fd[<span style=color:#ae81ff>2</span>];
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>pipe</span>(fd);
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>pid_t</span> pid <span style=color:#f92672>=</span> <span style=color:#a6e22e>fork</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>) {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;fork failed&#34;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// 親プロセス
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#66d9ef>char</span> str[] <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;Hello World!&#34;</span>;
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>close</span>(fd[READ]);<span style=color:#75715e>//使わない方のファイルディスクリプタは閉じておく
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#a6e22e>write</span>(fd[WRITE], str, <span style=color:#a6e22e>strlen</span>(str));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>//子プロセス
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#66d9ef>char</span> buf[BUFLEN];
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>close</span>(fd[WRITE]);<span style=color:#75715e>//使わない方のファイルディスクリプタは閉じておく
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#a6e22e>read</span>(fd[READ], buf, BUFLEN);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;buf = %s</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, buf);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>この例では、親から子への一方向のみの通信です。</p><p>親から子への通信では、親が子のデータを読み込むことは無いので親側の読み込み用のファイルディスクリプタを閉じます。<br>また、子が親側に書き込むことも無いので、子側では書き込み用のファイルディスクリプタを閉じます。</p><p>特に、書き込み用のファイルディスクリプタは閉じておかないとEOF(ファイル終端)の判定ができないので要注意です。</p><h3 id=標準入出力につなぐ-dup22->標準入出力につなぐ-dup2(2)-</h3><p>上記の方法では、<code>fork</code>を利用してプロセスを分けたアプリの間でしかプロセス間の通信ができません。</p><p>パイプを標準入出力につなぐ事で、別のアプリとの通信を実現できるようになります。</p><p>標準入力、標準出力、標準エラー出力のファイルディスクリプタはそれぞれ、<code>0</code>, <code>1</code>, <code>2</code>です。</p><p>パイプを標準入出力につなぐには<code>dup2</code>関数を利用します。<br><code>dup2</code>は<code>unistd.h</code>に以下のように宣言されています。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>dup2</span>(<span style=color:#66d9ef>int</span> fildes, <span style=color:#66d9ef>int</span> fildes2);
+</span></span></code></pre></div><p>第一引数には、元のファイルディスクリプタを<br>第二引数には、元のファイルディスクリプタとして振舞わせたいファイルディスクリプタを渡します。</p><p>いきなりパイプと組み合わせると難しいと思うので、まずは、実在するファイルを標準出力として振舞わせる例を挙げます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;fcntl.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> fd <span style=color:#f92672>=</span> <span style=color:#a6e22e>open</span>(<span style=color:#e6db74>&#34;./open.txt&#34;</span>, O_WRONLY<span style=color:#f92672>|</span>O_CREAT<span style=color:#f92672>|</span>O_TRUNC);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span>(fd <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>){
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;open failed</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>close</span>(STDOUT_FILENO);
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>dup2</span>(fd, STDOUT_FILENO);<span style=color:#75715e>//この時点でファイルディスクリプタの`0`は、&#34;./open.txt&#34;を示すようになる。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>printf</span>(<span style=color:#e6db74>&#34;printf</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);<span style=color:#75715e>//これはファイルに出力される。
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>ファイルディスクリプタを複製する時は事前に元あったファイルディスクリプタを閉じる必要があるので注意してください。</p><p>同じ要領で今度は、パイプと組み合わせます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-c data-lang=c><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;unistd.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;stdio.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#include</span> <span style=color:#75715e>&lt;string.h&gt;</span><span style=color:#75715e>
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#75715e>#define READ 0
+</span></span></span><span style=display:flex><span><span style=color:#75715e>#define WRITE 1
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>int</span> <span style=color:#a6e22e>main</span>(<span style=color:#66d9ef>void</span>)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>int</span> fd[<span style=color:#ae81ff>2</span>];
+</span></span><span style=display:flex><span>    <span style=color:#a6e22e>pipe</span>(fd);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>pid_t</span> pid <span style=color:#f92672>=</span> <span style=color:#a6e22e>fork</span>();
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>&lt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>perror</span>(<span style=color:#e6db74>&#34;fork failed</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (pid <span style=color:#f92672>&gt;</span> <span style=color:#ae81ff>0</span>)
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//親プロセス
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#a6e22e>close</span>(fd[READ]);
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>close</span>(STDOUT_FILENO);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>dup2</span>(fd[WRITE], STDOUT_FILENO);<span style=color:#75715e>// この時点でファイルディスクリプタの`1`はパイプの書き込み側を示すようになる
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span> cmd[] <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;ps&#34;</span>, NULL};
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>execvp</span>(cmd[<span style=color:#ae81ff>0</span>], cmd);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>else</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#75715e>//子プロセス
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        <span style=color:#a6e22e>close</span>(fd[WRITE]);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>close</span>(STDIN_FILENO);
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>dup2</span>(fd[READ], STDIN_FILENO);<span style=color:#75715e>// この時点でファイルディスクリプタの`0`はパイプの読み込み側を示すようになる
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>char</span><span style=color:#f92672>*</span> cmd[] <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#34;cat&#34;</span>, <span style=color:#e6db74>&#34;-b&#34;</span>, NULL};
+</span></span><span style=display:flex><span>        <span style=color:#a6e22e>execvp</span>(cmd[<span style=color:#ae81ff>0</span>], cmd);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>0</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>これを実行すると、<code>ps | cat -b</code>と同じ結果が得られます。</p><p>※簡略化のため一部例外処理等を省略しています。<br>そのため実用上は問題のあるコードになっています。</p><p>次回は、以前作った自作<code>bash風</code>プログラムに、リダイレクトやパイプの機能をつけてみようと思います。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/c/c++/ rel=tag>c/c++</a></li><li class=tags__item><a class="tags__link btn" href=/tags/unix/ rel=tag>unix</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/124/>[Django] カスタムユーザーを利用する</a></li><li class=widget__item><a class=widget__link href=/articles/82/>Swiftにインクリメント(++)、デクリメント(--)を復活させる</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/83/>[Django] Http Headerを取得、追加する方法</a></li><li class=widget__item><a class=widget__link href=/articles/161/>[Django] リダイレクト時のステータスコードを307、308にする</a></li><li class=widget__item><a class=widget__link href=/articles/122/>django-debug-toolbarが動かない</a></li><li class=widget__item><a class=widget__link href=/articles/121/>Django開発の必須パッケージ、django-debug-toolbarの導入</a></li><li class=widget__item><a class=widget__link href=/articles/120/>[Django] RedirectViewについて詳しく見てみる</a></li><li class=widget__item><a class=widget__link href=/articles/165/>UNIXプログラミング入門~プロセス編(3/4)~</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c/c++/ title=c/c++>c/c++ (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (36)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%82%AF%E3%83%A9%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%83%93%E3%83%A5%E3%83%BC%E3%81%AE%E3%81%99%E3%83%BD%E3%82%81/ title=Djangoクラスベースビューのすヽめ>Djangoクラスベースビューのすヽめ (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gitlab/ title=gitlab>gitlab (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (8)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/opencv/ title=OpenCV>OpenCV (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (12)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ssh/ title=ssh>ssh (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift/ title=swift>swift (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/unix/ title=unix>unix (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
