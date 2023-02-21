@@ -1,0 +1,190 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Django-Boost日本語ドキュメント - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="Django-Boost日本語ドキュメント"><meta name=twitter:description content="GitHub https://github.com/ChanTsune/django-boost django-boost: version 1.0 インストール pip install django-boost pipを用いてインストールするかまたは、 git clone https://github.com/ChanTsune/Django-Boost.git python setup.py install GitHubから直接クローンしてもインストール出来ます。 アプ"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>Django-Boost日本語ドキュメント</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2019-05-24T15:33:31Z>May 24, 2019</time>
+<time class=meta__text datetime=2019-05-24T23:59:55Z>(最終更新: May 24, 2019)</time></div></div></header><div class="content post__content clearfix"><h2 id=github>GitHub</h2><p><a href=https://github.com/ChanTsune/django-boost>https://github.com/ChanTsune/django-boost</a></p><p>django-boost: version 1.0</p><h2 id=インストール>インストール</h2><pre tabindex=0><code>pip install django-boost
+</code></pre><p>pipを用いてインストールするかまたは、</p><pre tabindex=0><code>git clone https://github.com/ChanTsune/Django-Boost.git
+
+python setup.py install
+</code></pre><p>GitHubから直接クローンしてもインストール出来ます。</p><h2 id=アプリケーションの追加>アプリケーションの追加</h2><p>settings.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>INSTALLED_APPS <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django_boost&#39;</span>,
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><h2 id=利用例>利用例</h2><h3 id=カスタムユーザー>カスタムユーザー</h3><h4 id=emailuser>EmailUser</h4><p>メールアドレスを利用したログイン<br>settings.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>AUTH_USER_MODEL <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;django_boost.EmailUser&#39;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span></code></pre></div><p>Djangoの標準ユーザーモデルを置き換えます。<br>ログイン時にユーザー名の代わりにメールアドレスを利用します。</p><h4 id=abstractemailuser>AbstractEmailUser</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.db <span style=color:#f92672>import</span> models
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.models <span style=color:#f92672>import</span> AbstractEmailUser
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CustomUser</span>(AbstractEmailUser):
+</span></span><span style=display:flex><span>    is_flozen <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>BoolField(default<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>)
+</span></span><span style=display:flex><span>    homepage <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>URLField()
+</span></span></code></pre></div><p>先程のEmailUserに追加のフィールドをもたせたい場合に利用します。</p><h3 id=modelmixins>ModelMixins</h3><h4 id=uuidmodelmixin>UUIDModelMixin</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.db <span style=color:#f92672>import</span> models
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.models <span style=color:#f92672>import</span> UUIDModelMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Stock</span>(UUIDModelMixin):
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>CharField(max_length<span style=color:#f92672>=</span><span style=color:#ae81ff>128</span>)
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>IntegerField()
+</span></span></code></pre></div><p>このクラスを継承してモデルを定義すると自動生成される<code>id</code>フィールドのクラスを<code>AutoField</code>から<code>UUIDField</code>に置き換えます。</p><h4 id=timestampmodelmixin>TimeStampModelMixin</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.db <span style=color:#f92672>import</span> models
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.models.mixins <span style=color:#f92672>import</span> TimeStampModelMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Stock</span>(TimeStampModelMixin):
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>CharField(max_length<span style=color:#f92672>=</span><span style=color:#ae81ff>128</span>)
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>IntegerField()
+</span></span></code></pre></div><p>モデルに<code>posted_at</code>と<code>updated_at</code>のフィールドが追加されます。<br>それぞれ作成日時と更新日時が自動的に保存されます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>posted_at <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>DateTimeField(auto_now_add<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span><span style=display:flex><span>updated_at <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>DateTimeField(auto_now<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</span></span></code></pre></div><h4 id=組み合わせて使う>組み合わせて使う</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.db <span style=color:#f92672>import</span> models
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.models.mixins <span style=color:#f92672>import</span> UUIDMixin, TimeStampMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Stock</span>(UUIDModelMixin,TimeStampModelMixin):
+</span></span><span style=display:flex><span>    name <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>CharField(max_length<span style=color:#f92672>=</span><span style=color:#ae81ff>128</span>)
+</span></span><span style=display:flex><span>    count <span style=color:#f92672>=</span> models<span style=color:#f92672>.</span>IntegerField()
+</span></span></code></pre></div><p>これらのミックスインは、この様に組み合わせて使うこともできます。</p><h3 id=フィールド>フィールド</h3><h4 id=colorcodefield>ColorCodeField</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.db <span style=color:#f92672>import</span> models
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.models.filed <span style=color:#f92672>import</span> ColorCodeField()
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Model</span>(models<span style=color:#f92672>.</span>Model):
+</span></span><span style=display:flex><span>    color <span style=color:#f92672>=</span> ColorCodeField()
+</span></span></code></pre></div><p><code>#</code>から始まる、16進数のカラーコードを保存します。<br><code>upper=True</code>を設定するとアルファベットが大文字に自動変換されて保存されます。<br>また、<code>lower=True</code>を設定した場合アルファベットは小文字に自動変換されて保存されます。<br>両方を同時に指定することはできません。<br>どちらも設定しなければ、保存時に自動変換されることはありません。<br>デフォルトの設定は<code>upper=False</code>,<code>lower=Flase</code>です。</p><h3 id=ミドルウェア>ミドルウェア</h3><h4 id=redirectcorrecthostnamemiddleware>RedirectCorrectHostnameMiddleware</h4><p>settings.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>
+</span></span><span style=display:flex><span>MIDDLEWARE <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django_boost.middleware.RedirectCorrectHostnameMiddleware&#39;</span>,  <span style=color:#75715e># django_boost</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django.middleware.security.SecurityMiddleware&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>]
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>CORRECT_HOST <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;sample.com&#39;</span>
+</span></span></code></pre></div><p>全てのアクセスを<code>CORRECT_HOST</code>に設定したドメインにリダイレクトします。</p><p><code>DEBUG = True</code>の時にはリダイレクトしません。</p><p>ドメインを移行する際などに便利です。</p><p>通常は、このような操作はnginxやapacheなどのサーバーソフトウェアで行うべきですが、簡単に設定を行いたいときや、herokuなどのサービスを利用する時には効果的です。</p><h4 id=httpstatuscodeexceptionmiddleware>HttpStatusCodeExceptionMiddleware</h4><p>settings.py</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>MIDDLEWARE <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django_boost.middleware.HttpStatusCodeExceptionMiddleware&#39;</span>,  <span style=color:#75715e># django_boost</span>
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django.middleware.security.SecurityMiddleware&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#e6db74>&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>...</span>
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>後述する、<code>HttpStatusCode exceptions</code>を扱う時に必要です。</p><h3 id=httpstatuscode-exceptions>HttpStatusCode Exceptions</h3><p>Django標準の<code>Http404</code>例外と同じように使える、Httpステータスコード例外</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.http <span style=color:#f92672>import</span> JsonResponse
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.http <span style=color:#f92672>import</span> Http400, Http415
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>view</span>(request):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>if</span> request<span style=color:#f92672>.</span>content_type <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;application/json&#39;</span>:
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>raise</span> Http415
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> JsonResponse({<span style=color:#e6db74>&#34;message&#34;</span>:<span style=color:#e6db74>&#34;ok&#34;</span>})
+</span></span></code></pre></div><p><code>MIDDLEWARE</code>に<code>HttpStatusCodeExceptionMiddleware</code>を設定する必要があります。</p><h3 id=テンプレート変数>テンプレート変数</h3><h4 id=ユーザーエージェント>ユーザーエージェント</h4><p>テンプレート内でユーザーエージェントを利用する</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>TEMPLATES <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;BACKEND&#39;</span>: <span style=color:#e6db74>&#39;django.template.backends.django.DjangoTemplates&#39;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;DIRS&#39;</span>: [],
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;APP_DIRS&#39;</span>: <span style=color:#66d9ef>True</span>,
+</span></span><span style=display:flex><span>        <span style=color:#e6db74>&#39;OPTIONS&#39;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#39;context_processors&#39;</span>: [
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;django.template.context_processors.debug&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;django.template.context_processors.request&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;django.contrib.auth.context_processors.auth&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;django.contrib.messages.context_processors.messages&#39;</span>,
+</span></span><span style=display:flex><span>                <span style=color:#e6db74>&#39;django_boost.context_processors.user_agent&#39;</span>, <span style=color:#75715e># django boost</span>
+</span></span><span style=display:flex><span>            ],
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>ユーザーエージェント<code>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36</code>が与えられた時に、Djangoテンプレート内で以下の変数が使えるようにします。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>{<span style=color:#e6db74>&#39;user_agent&#39;</span>: <span style=color:#e6db74>&#39;Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36&#39;</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;browser&#39;</span>: <span style=color:#e6db74>&#39;Chrome&#39;</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;device&#39;</span>: <span style=color:#e6db74>&#39;Other&#39;</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_bot&#39;</span>: <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_email_client&#39;</span>: <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_mobile&#39;</span>: <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_pc&#39;</span>: <span style=color:#66d9ef>True</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_tablet&#39;</span>: <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;is_touch_capable&#39;</span>: <span style=color:#66d9ef>False</span>,
+</span></span><span style=display:flex><span><span style=color:#e6db74>&#39;os&#39;</span>: <span style=color:#e6db74>&#39;Mac OS X&#39;</span>}
+</span></span></code></pre></div><p>これらの情報は<a href=https://github.com/selwin/python-user-agents>user-agents</a>を利用しています。</p><p>モバイルとデスクトップで表示を切り替えたいときに利用できます。</p><h3 id=acsess-mixins>Acsess Mixins</h3><h4 id=reauthenticationrequiredmixin>ReAuthenticationRequiredMixin</h4><p>ログインから一定時間が経った際に再認証を要求するミックスイン</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.views.generic <span style=color:#f92672>import</span> TemplateView
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.views.mixin <span style=color:#f92672>import</span> ReAuthenticationRequiredMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RecentLogin</span>(ReAuthenticationRequiredMixin,TemplateView):
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;mypage.html&#34;</span>
+</span></span><span style=display:flex><span>    auth_unnecessary <span style=color:#f92672>=</span> <span style=color:#ae81ff>3600</span>
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> datetime <span style=color:#f92672>import</span> timedelta
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django.views.generic <span style=color:#f92672>import</span> TemplateView
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.views.mixin <span style=color:#f92672>import</span> ReAuthenticationRequiredMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>RecentLogin</span>(ReAuthenticationRequiredMixin,TemplateView):
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;mypage.html&#34;</span>
+</span></span><span style=display:flex><span>    auth_unnecessary <span style=color:#f92672>=</span> timedelta(hours<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>)
+</span></span></code></pre></div><p><code>auth_unnecessary</code>は再認証を要求するまでの期間です。<br>ユーザーモデルの最終ログイン時刻からの経過時間を指定します。<br><code>int</code>、<code>timedelta</code> 、<code>None</code>型の値を指定することができます。
+<code>None</code>は<code>0</code>を指定するのと同じです。</p><p><code>logout=True</code>を指定すると最終ログイン時刻が指定時間を超えた際にユーザーをログアウト状態にします。<br><code>logout=False</code>を指定した場合、指定時間を超えてもユーザーをログアウト状態にはしません。ただし、再度認証をしないとページへのアクセスはできません。</p><p>アクセスが可能な期間を限定します。<br><code>start_datetime</code>には、アクセスが可能になる日時を、<code>end_datetime</code>にはアクセスが可能である最終日時を指定します。</p><p>それぞれ、<code>get_start_datetime</code>,<code>get_end_datetime</code>メソッドをオーバーライドすることで、動的にアクセス可能な日時を変更できます。</p><p><code>exception_class</code>にアクセス可能な条件が満たされなかった時に送出される例外クラスを指定できます。<br>デフォルトは、<code>Http404</code>例外です。</p><h3 id=redirect-control-mixins>Redirect Control Mixins</h3><h4 id=dynamicredirectmixin>DynamicRedirectMixin</h4><p><code>LoginView</code>の様にURLのクエリ文字列<code>next=~</code>にリダイレクト先のURLを指定することでリダイレクト先を動的にコントロールできる様にするミックスイン。</p><p>フォーム系のgenericViewと組み合わせて利用できます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.views,generic <span style=color:#f92672>import</span> FormView
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.views.mixins <span style=color:#f92672>import</span> DynamicRedirectMixin
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>MyFormView</span>(DynamicRedirectMixin, FormView):
+</span></span><span style=display:flex><span>    redirect_field_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;next&#39;</span> <span style=color:#75715e># default is &#39;next&#39;</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>...</span>
+</span></span></code></pre></div><p><code>redirect_field_name</code>の部分を変更することで<code>next</code>部分を別の名前に変更することができます。.</p><h3 id=form-mixin>form mixin</h3><h4 id=muchedobjectgetmixin>MuchedObjectGetMixin</h4><p>フォームの入力内容にマッチするモデルオブジェクト又はクエリーセットを取得できる様にするミックスイン</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django <span style=color:#f92672>import</span> forms
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django_boost.forms.mixins <span style=color:#f92672>import</span> MuchedObjectGetMixin
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> .models <span style=color:#f92672>import</span> Customer
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CustomerForm</span>(MuchedObjectGetMixin, forms<span style=color:#f92672>.</span>ModelForm):
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>Meta</span>:
+</span></span><span style=display:flex><span>        models <span style=color:#f92672>=</span> Customer
+</span></span><span style=display:flex><span>        fields <span style=color:#f92672>=</span> (<span style=color:#e6db74>&#39;name&#39;</span>, )
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span><span style=color:#f92672>from</span> django.views.generic <span style=color:#f92672>import</span> FormView
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> .forms <span style=color:#f92672>import</span> CustomerForm
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>CustomerSearchView</span>(FormView):
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;form.html&#34;</span>
+</span></span><span style=display:flex><span>    form_class <span style=color:#f92672>=</span> CustomerForm
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>def</span> <span style=color:#a6e22e>form_valid</span>(self,form):
+</span></span><span style=display:flex><span>        object <span style=color:#f92672>=</span> form<span style=color:#f92672>.</span>get_object()  <span style=color:#75715e># get muched model object</span>
+</span></span><span style=display:flex><span>        object_list <span style=color:#f92672>=</span> form<span style=color:#f92672>.</span>get_list()  <span style=color:#75715e># get muched models objects queryset</span>
+</span></span></code></pre></div><p><code>MuchedObjectMixin</code>は<code>get_object</code>と <code>get_list</code>メソッドを提供します。それぞれフォームの入力内容にマッチする<code>model object</code>、<code>query set</code>を返却します。</p><h3 id=template-tags>Template Tags</h3><p>Python組み込みの関数をフィルターやタグとして、Djangoテンプレート内で利用できる様にする。<br><code>isiterable</code>フィルターの様にPythonの組み込み関数には含まれないがDjangoテンプレートで便利なフィルターも提供されます。</p><h4 id=boost-filters>boost filters</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost %}
+</span></span></code></pre></div><h5 id=isiterable>isiterable</h5><p>isiterable フィルターは、対象のオブジェクトが反復可能(イテレータブル)な場合にTrueそうでない場合にはFalseを返します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{% if object|isiterable %}
+</span></span><span style=display:flex><span>  {% for i in object %}
+</span></span><span style=display:flex><span>    &lt;<span style=color:#f92672>p</span>&gt;{{ i }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>  {% endfor %}
+</span></span><span style=display:flex><span>{% else %}
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;{{ object }}&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>{% endif %}
+</span></span></code></pre></div><h4 id=boost_url-filters>boost_url Filters</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost_url %}
+</span></span></code></pre></div><h5 id=urlencode>urlencode</h5><p>フィルターにかけた文字列をURLエンコードします。<br>フィルターの引数に変換しない文字を指定できます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost_url %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{{ url | urlencode }}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{{ url | urlencode:&#39;abc&#39; }}
+</span></span></code></pre></div><h5 id=urldecode>urldecode</h5><p><code>urlencode</code>逆の働きをします。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost_url %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{{ url | urldecode }}
+</span></span></code></pre></div><h4 id=boost_url-tags>boost_url Tags</h4><h5 id=replace_parameters>replace_parameters</h5><p>現在のページのURLクエリ文字列を引数で置き換えた新たなクエリ文字列を生成します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=display:flex><span>{% load boost_url %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{# case of current page&#39;s query string is `?id=2`#}
+</span></span><span style=display:flex><span>{% replace_parameters request &#39;id&#39; 1 &#39;age&#39; 20 %}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>{# The result of replacing is `?id=2<span style=color:#960050;background-color:#1e0010>&amp;</span>age=20` #}
+</span></span></code></pre></div><p>ページネーションの際にパラメータを引き継がせる時に便利です。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/django/ rel=tag>django</a></li><li class=tags__item><a class="tags__link btn" href=/tags/django-boost/ rel=tag>Django-Boost</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/173/>kotlinでEnumをもっと便利に使いたい！</a></li><li class=widget__item><a class=widget__link href=/articles/124/>[Django] カスタムユーザーを利用する</a></li><li class=widget__item><a class=widget__link href=/articles/82/>Swiftにインクリメント(++)、デクリメント(--)を復活させる</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/83/>[Django] Http Headerを取得、追加する方法</a></li><li class=widget__item><a class=widget__link href=/articles/177/>[Python] パッケージのsetup関数のclassifiersって何書けばいいの？</a></li><li class=widget__item><a class=widget__link href=/articles/179/>Django-Boost日本語ドキュメント</a></li><li class=widget__item><a class=widget__link href=/articles/161/>[Django] リダイレクト時のステータスコードを307、308にする</a></li><li class=widget__item><a class=widget__link href=/articles/178/>[Mac] sudoコマンドの認証をTouch IDにする</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c/c++/ title=c/c++>c/c++ (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (42)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django-boost/ title=Django-Boost>Django-Boost (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%82%AF%E3%83%A9%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%83%93%E3%83%A5%E3%83%BC%E3%81%AE%E3%81%99%E3%83%BD%E3%82%81/ title=Djangoクラスベースビューのすヽめ>Djangoクラスベースビューのすヽめ (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gitlab/ title=gitlab>gitlab (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (8)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/kotlin/ title=kotlin>kotlin (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/mac/ title=Mac>Mac (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/opencv/ title=OpenCV>OpenCV (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pyenv/ title=pyenv>pyenv (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (17)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/raspberry-pi/ title="Raspberry Pi">Raspberry Pi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ssh/ title=ssh>ssh (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift/ title=swift>swift (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/unix/ title=unix>unix (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
