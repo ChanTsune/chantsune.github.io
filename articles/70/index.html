@@ -1,0 +1,156 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>[Django] URLの指定の仕方(URLディスパッチャ) - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="[Django] URLの指定の仕方(URLディスパッチャ)"><meta name=twitter:description content="第三回になりました。 今回はDjangoのURLの指定の仕方を説明したいと思います。 シリーズ一覧 プロジェクトの作成とアプリケーションの作成 vi"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>[Django] URLの指定の仕方(URLディスパッチャ)</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2018-11-12T23:26:01Z>November 12, 2018</time>
+<time class=meta__text datetime=2018-11-25T07:21:55Z>(最終更新: November 25, 2018)</time></div></div></header><div class="content post__content clearfix"><p>第三回になりました。<br>今回はDjangoのURLの指定の仕方を説明したいと思います。</p><h3 id=シリーズ一覧>シリーズ一覧</h3><blockquote><ol><li><a href=/articles/68/>プロジェクトの作成とアプリケーションの作成</a></li><li><a href=/articles/69/>view関数の書き方</a></li><li><a href=/articles/70/>URLの指定の仕方(URLディスパッチャ)</a> &lt;- 今回</li><li><a href=/articles/71/>データベース(モデル)の設定</a></li><li><a href=/articles/72/>記事の投稿ページの作成</a></li><li><a href=/articles/73/>記事の一覧ページと詳細ページの追加</a></li><li><a href=/articles/74/>記事の編集ページと記事の削除機能の追加</a></li><li><a href=/articles/75/>いいね機能の追加</a></li><li><a href=/articles/77/>コメント機能の追加</a></li><li><a href=/articles/78/>Bootstrapを利用したwebデザイン</a></li></ol></blockquote><h2 id=はじめに>はじめに</h2><p>前回同様<code>myblog</code>という名前のプロジェクト<br><code>blog</code>という名前のアプリを作成しいている呈で話を進めます。<br>現在のプロジェクトの構成は以下のようになっているとします。</p><pre tabindex=0><code>./myblog
+├── blog
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   └── __init__.py
+│   ├── templates
+│   │   └── blog
+│   │      └── index.html
+│   ├── models.py
+│   ├── tests.py
+│   └── views.py
+├── manage.py
+└── blog
+    ├── __init__.py
+    ├── settings.py
+    ├── urls.py
+    └── wsgi.py
+</code></pre><p>また、<code>blog/view.py</code>は以下の内容どちらかが書き込まれていることを想定しています。</p><p>関数ベースのビューの場合</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.shortcuts <span style=color:#f92672>import</span> render
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>index</span>(request):
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;blog/index.html&#34;</span> <span style=color:#75715e># templates以下のパスを書く</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> render(request, template_name)
+</span></span></code></pre></div><p>クラスベースのビューの場合</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.views.generic <span style=color:#f92672>import</span> TemplateView
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>index</span>(TemplateView):
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;blog/index.html&#34;</span> <span style=color:#75715e># templates以下のパスを書く</span>
+</span></span></code></pre></div><h2 id=urlってどこで設定するの>URLってどこで設定するの？</h2><p>DjangoでURLを指定するにはurls.pyを編集してあげる必要があります。<br>urls.pyに書かれているurlpatternsというリスト型の変数が実際にユーザーがアクセス出来るURLを表します。</p><h2 id=urlを設定する>URLを設定する</h2><p>というわけで、実際に設定してみましょう。<br>トップページが<code>http://localhost:8000/</code>というURLになるように設定します。</p><p><code>./myblog/urls.py</code>がメインのURLを記述するところです。<br>今の状態は以下のようになっているはずです。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.contrib <span style=color:#f92672>import</span> admin
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django.urls <span style=color:#f92672>import</span> path
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>urlpatterns <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#39;admin/&#39;</span>, admin<span style=color:#f92672>.</span>site<span style=color:#f92672>.</span>urls),
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>これを以下のように書き足します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.contrib <span style=color:#f92672>import</span> admin
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> django.urls <span style=color:#f92672>import</span> path, include <span style=color:#75715e># include を追記</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>urlpatterns <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#39;admin/&#39;</span>, admin<span style=color:#f92672>.</span>site<span style=color:#f92672>.</span>urls),
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#39;&#39;</span>, include(<span style=color:#e6db74>&#34;blog.urls&#34;</span>)),<span style=color:#75715e># 追記</span>
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>続いて<code>./blog</code>ディレクトリの中に、新しく<code>urls.py</code>を作りましょう。</p><pre tabindex=0><code>blog
+├── admin.py
+├── apps.py
+├── __init__.py
+├── migrations
+│   └── __init__.py
+├── templates
+│   └── blog
+│      └── index.html
+├── models.py
+├── tests.py
+├── urls.py # 新しく作る
+└── views.py
+</code></pre><p>中身に以下の内容を書き込みます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.urls <span style=color:#f92672>import</span> path
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> . <span style=color:#f92672>import</span> views
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>urlpatterns <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#34;&#34;</span> ,views<span style=color:#f92672>.</span>index,name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;index&#34;</span>),
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>クラスベースの場合は以下のようにしてください。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.urls <span style=color:#f92672>import</span> path
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> . <span style=color:#f92672>import</span> views
+</span></span><span style=display:flex><span>urlpatterns <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>  path(<span style=color:#e6db74>&#34;&#34;</span>, views<span style=color:#f92672>.</span>index<span style=color:#f92672>.</span>as_view(), name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;index&#34;</span>) <span style=color:#75715e># クラスベースの場合は as_view メソッドを呼び出す</span>
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>こうすることで<code>http://localhot:8000</code>というURLにアクセスすることができるようになります。</p><p>試しにやってみましょう。<br>コンソールで以下のコマンドを実行します。</p><pre tabindex=0><code>python manage.py runserver
+</code></pre><pre tabindex=0><code>Performing system checks...
+
+System check identified no issues (0 silenced).
+
+You have 14 unapplied migration(s). Your project may not work properly until you apply the migrations for app(s): admin, auth, contenttypes, sessions.
+Run &#39;python manage.py migrate&#39; to apply them.
+November 09, 2018 - 17:28:42
+Django version 2.0.8, using settings &#39;myblog.settings&#39;
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CTRL-BREAK.
+</code></pre><p>エラーが出なければ上記のような文字列が出力されます。<br>マイグレーションしてないよ、みたいなのが出ますが気にせずに<br>http://localhost:8000/</p><p>にアクセスしてみましょう。</p><p>アクセスに成功すればブラウザに</p><p><code>まい ぶろく とっぷぺーじ</code></p><p>と表示されるはずです。</p><p>今度は新しく<code>http://localhost:8000/new</code>というページを追加してみましょう。</p><p>新しいページを追加するには<code>blog/urls.py</code>,<code>blog/views.py</code>にそれぞれ追記します。</p><p><code>blog/urls.py</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.urls <span style=color:#f92672>import</span> path
+</span></span><span style=display:flex><span><span style=color:#f92672>from</span> . <span style=color:#f92672>import</span> views
+</span></span><span style=display:flex><span>urlpatterns <span style=color:#f92672>=</span> [
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#34;&#34;</span>, views<span style=color:#f92672>.</span>index, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;index&#34;</span>),
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#34;new/&#34;</span>, views<span style=color:#f92672>.</span>new, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;new&#34;</span>), <span style=color:#75715e># 追記</span>
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p><code>blog/views.py</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span><span style=color:#f92672>from</span> django.shortcuts <span style=color:#f92672>import</span> render
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>index</span>(request):
+</span></span><span style=display:flex><span>    <span style=color:#75715e># templates以下のパスを書く(アプリケーション名[blog] / ファイル名[index.html])</span>
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;blog/index.html&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> render(request, template_name)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>new</span>(request): <span style=color:#75715e># 新しくnew関数を追記</span>
+</span></span><span style=display:flex><span>    template_name <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;blog/new.html&#34;</span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>return</span> render(request,template_name)
+</span></span></code></pre></div><p>また、HTMLファイルも作っておきましょう。<br><code>blog/templates/blog/new.html</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-HTML data-lang=HTML><span style=display:flex><span><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>html</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>charset</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;utf-8&#34;</span> /&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>title</span>&gt;my-blog-new&lt;/<span style=color:#f92672>title</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>meta</span> <span style=color:#a6e22e>name</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;viewport&#34;</span> <span style=color:#a6e22e>content</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;width=device-width, initial-scale=1&#34;</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>head</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>  &lt;<span style=color:#f92672>p</span>&gt;まい ぶろぐ 新規記事の投稿ページ&lt;/<span style=color:#f92672>p</span>&gt;
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>body</span>&gt;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>&lt;/<span style=color:#f92672>html</span>&gt;
+</span></span></code></pre></div><p>追記新規作成するファイルは以下の通りです。</p><pre tabindex=0><code>blog
+├── admin.py
+├── apps.py
+├── __init__.py
+├── migrations
+│   └── __init__.py
+├── templates
+│   └── blog
+│      ├── index.html
+│      └── new.html # 新しく作る
+├── models.py
+├── tests.py
+├── urls.py # 追記するファイル
+└── views.py # 追記するファイル
+</code></pre><p>これで<code>http://localhost:8000/new/</code>にアクセスできるようになりますのでアクセスしてみましょう。</p><p>画面に</p><p><code>まい ぶろぐ 新規記事の投稿ページ</code></p><p>と表示されればOKです。</p><p>以下は新しく登場したpath関数とinclude関数の説明です。</p><h2 id=path関数>path関数</h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>path(<span style=color:#e6db74>&#34;new/&#34;</span>, views<span style=color:#f92672>.</span>new, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;new&#34;</span>),
+</span></span></code></pre></div><p>path関数の第一引数がURL、第二引数がそのURLに対応するview関数になります。<br>名前付き引数のnameがテンプレート内で指定するURLの名称です。※詳しくは次回以降説明します。<br>nameは省略できます。<br>省略するとview関数の名前がそのまま利用されますが、わかりづらいのできちんと設定しておくことをお勧めします。</p><p>クラスベースの場合は第二引数をviewクラスの名前にしてas_viewメソッドを呼び出します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>path(<span style=color:#e6db74>&#34;new/&#34;</span>, views<span style=color:#f92672>.</span>new<span style=color:#f92672>.</span>as_view(), name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;new&#34;</span>),
+</span></span></code></pre></div><h2 id=include関数>include関数</h2><p>path関数の第二引数にview関数の代わりに指定する事でURLを連結することができます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>path(<span style=color:#e6db74>&#34;&#34;</span>, include(<span style=color:#e6db74>&#34;blog.urls&#34;</span>))
+</span></span></code></pre></div><p>上の例ではblog.urls.pyで設定したURLを連結させています。<br><code>blog/urls.py</code>で
+以下のように設定されていれば</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>urlpatterns<span style=color:#f92672>=</span>[
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#34;&#34;</span>, views<span style=color:#f92672>.</span>index, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;index&#34;</span>),
+</span></span><span style=display:flex><span>    path(<span style=color:#e6db74>&#34;new/&#34;</span>, views<span style=color:#f92672>.</span>new, name<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;new&#34;</span>),
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>実際にアクセスするURLはそれぞれ
+<code>http://localhot:8000/</code>
+<code>http://localhot:8000/new/</code>
+となります。</p><p>また、</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=display:flex><span>path(<span style=color:#e6db74>&#34;blog/&#34;</span>, include(<span style=color:#e6db74>&#34;blog.urls&#34;</span>)) <span style=color:#75715e># &#34;&#34; -&gt; &#34;blog/&#34;</span>
+</span></span></code></pre></div><p>とすると実際にアクセスするURLはそれぞれ
+<code>http://localhot:8000/blog/</code>
+<code>http://localhot:8000/blog/new/</code>
+となります。</p><p><code>/myblog/urls.py</code>の<code>path("blog/",include("blog.urls"))</code>で<code>blog/urls.py</code>の内容を繋げています。</p><h3 id=最後に>最後に</h3><p>URLも設定できて、ページにアクセスできるようになったので、次回はデータベース(モデル)の設定をやってみましょう。</p><p>次回</p><blockquote><p><a href=/articles/71/>[Django] データベース(モデル)の設定</a></p></blockquote></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/django/ rel=tag>django</a></li><li class=tags__item><a class="tags__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ rel=tag>Djangoでブログを作ろう</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/70/>[Django] URLの指定の仕方(URLディスパッチャ)</a></li><li class=widget__item><a class=widget__link href=/articles/69/>[Django] view関数の書き方</a></li><li class=widget__item><a class=widget__link href=/articles/27/>PNGイメージのデータ構造を知ってみる(1)</a></li><li class=widget__item><a class=widget__link href=/articles/68/>[Django] プロジェクトの作成とアプリケーションの作成</a></li><li class=widget__item><a class=widget__link href=/articles/67/>これだけは知っておきたいDjangoテンプレートの基本文法</a></li><li class=widget__item><a class=widget__link href=/articles/66/>pytorchで機械学習(導入編)</a></li><li class=widget__item><a class=widget__link href=/articles/64/>ページ内リンクにスクロールアニメーションをつける</a></li><li class=widget__item><a class=widget__link href=/articles/62/>[Django] ログイン必須のページを作る</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (17)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (6)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
