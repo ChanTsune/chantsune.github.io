@@ -1,0 +1,154 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>pythonの変数のスコープってどこからどこまで？ - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="pythonの変数のスコープってどこからどこまで？"><meta name=twitter:description content="新しくプログラミング言語を始めると気になってくるのが変数のスコープです。 どこからどこまでが有効なのか知っていて損をすることはまずありません。"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>pythonの変数のスコープってどこからどこまで？</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2019-05-29T06:21:49Z>May 29, 2019</time></div></div></header><div class="content post__content clearfix"><p>新しくプログラミング言語を始めると気になってくるのが変数のスコープです。</p><p>どこからどこまでが有効なのか知っていて損をすることはまずありません。</p><h2 id=スコープとは>スコープとは</h2><p>ご存知の方も多いとは思いますが、スコープとは変数の有効範囲の事です。</p><p>有効範囲、つまりその変数を利用できる範囲の事です。</p><h2 id=pythonのスコープ>pythonのスコープ</h2><p>早速ですが、次のプログラムを実行すると画面には何が表示されるでしょう？</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>print(x)
+</span></span></code></pre></div><p>はい、当然<code>1</code>が表示されます。</p><p>では次はどうでしょう？</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(x)
+</span></span></code></pre></div><p>関数<code>funcX</code>の中で<code>x</code>に<code>2</code>を代入しています。</p><p>関数を実行していないので当然表示される内容は<code>1</code>です。</p><p>続いて、関数<code>funcX</code>を実行した場合を考えます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcX()
+</span></span><span style=display:flex><span>print(x)
+</span></span></code></pre></div><p><code>x</code>を表示させる前に<code>funcX</code>を実行しています。<br>しかし、画面に表示されるのは<code>1</code>です。</p><p>ひょっとしてうまく代入出来なかったのかもしれません、<code>funcX</code>の中で<code>x</code>を表示させて確認してみましょう。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;funcX : &#34;</span>,x)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcX()
+</span></span><span style=display:flex><span><span style=color:#75715e># funcX : 2</span>
+</span></span><span style=display:flex><span>print(x)
+</span></span><span style=display:flex><span><span style=color:#75715e># 1</span>
+</span></span></code></pre></div><p><code>funcX</code>で表示させた<code>x</code>にはきちんと<code>2</code>が入っています。<br>でもやっぱり、<code>funcX</code>の外で表示させた<code>x</code>は<code>1</code>のままです。</p><p>このことから分かるのは<code>x = 1</code>をした時の<code>x</code>と<code>funcX</code>の中で<code>x = 2</code>をした時の<code>x</code>は別物だということです。</p><p>同じ変数名でも場所によって中身が違う、それこそがスコープの注意するところです。</p><h2 id=グローバルな変数-ローカルな変数>グローバルな変数 ローカルな変数</h2><p>pythonのスコープは基本的にはクラスや関数単位です。</p><p>関数の中で定義した変数はその関数の中でしか使えません。</p><p>グローバル変数やローカル変数など耳にしたことがあると思います。<br>それぞれがどんなものなのか簡単に説明します。</p><h3 id=グローバル変数>グローバル変数</h3><p>グローバル変数というのは何処からでも参照できる変数の事です。</p><p>関数やクラスの外で定義した変数が該当します。</p><p>先ほどのプログラムを例に挙げると</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> <span style=color:#75715e># &lt;- グローバル変数  </span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;funcX : &#34;</span>, x)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcX()
+</span></span><span style=display:flex><span>print(x) <span style=color:#75715e># &lt;- このxはグローバル変数x  </span>
+</span></span></code></pre></div><p>となります。</p><h3 id=ローカル変数>ローカル変数</h3><p>関数やクラスの中で宣言された利用できる範囲が制限された変数のことをローカル変数といいます。<br>クラス定義の中で宣言された変数はクラス変数とも呼ばれます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span> <span style=color:#75715e># &lt;- グローバル変数</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span> <span style=color:#75715e># &lt;-ローカル変数x</span>
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;funcX : &#34;</span>, x) <span style=color:#75715e># &lt;- ここのxはローカル変数のx</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcX()
+</span></span><span style=display:flex><span>print(x) <span style=color:#75715e># &lt;- このxはグローバル変数x</span>
+</span></span></code></pre></div><p>ローカル変数は原則、定義したスコープの外からは呼び出せないので、</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>1</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(x)
+</span></span><span style=display:flex><span><span style=color:#75715e># 1</span>
+</span></span><span style=display:flex><span>print(y)
+</span></span><span style=display:flex><span><span style=color:#75715e># NameError: name &#39;y&#39; is not defined</span>
+</span></span></code></pre></div><p>となってしまいます。</p><p>また、以下のようにグローバル変数に関数の中で代入を行なって変更を加えても、関数の中で宣言された変数扱いになるので、</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>z <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcZ</span>():
+</span></span><span style=display:flex><span>    z <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcZ()
+</span></span><span style=display:flex><span>print(z)
+</span></span><span style=display:flex><span><span style=color:#75715e># 0</span>
+</span></span></code></pre></div><p>グローバル変数<code>z</code>の方に影響はありません。<br>先ほどの<code>x</code>もその例です。</p><h3 id=グローバル変数の参照>グローバル変数の参照</h3><p>先ほど、グローバル変数はどこからでも参照できるという話をしましたが実際にどういうことかと言うと、こう言うことです。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> x
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;y =&#34;</span>, y)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcY()
+</span></span><span style=display:flex><span><span style=color:#75715e># y = 10</span>
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#34;x =&#34;</span>, x)
+</span></span><span style=display:flex><span><span style=color:#75715e># x = 10</span>
+</span></span></code></pre></div><p>関数<code>funcY</code>の中では<code>x</code>を定義していませんが、<code>y</code>には<code>x</code>の中の値<code>10</code>が代入されています。<br>これがグローバル変数は、どこからでも参照できると言うことです。</p><p>しかし、次のような場合は注意が必要です。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> x
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;y =&#34;</span>, y)
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcY()
+</span></span><span style=display:flex><span><span style=color:#75715e># Traceback (most recent call last):</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># File &#34;&lt;stdin&gt;&#34;, line 2, in funcY</span>
+</span></span><span style=display:flex><span><span style=color:#75715e># UnboundLocalError: local variable &#39;x&#39; referenced before assignment</span>
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#34;x =&#34;</span>, x)
+</span></span><span style=display:flex><span><span style=color:#75715e># x = 10</span>
+</span></span></code></pre></div><p>ローカル変数<code>x</code>が代入される前に参照されたと言うエラーが出ました。</p><p>プログラムは、基本的に上から順番に実行されるので<code>funcY</code>の<code>y = x</code>の<code>x</code>はグローバル変数の<code>x</code>を指しそうなものですが、そうは問屋が卸しません。</p><p>そのあとの行に注目してください。<br><code>x = 100</code>を実行しています。<br>つまり、ローカル変数<code>x</code>を定義しています。</p><p>Pythonは変数を探す時、呼び出されたところを基準として<strong>スコープが小さいところを優先</strong>して探します。</p><p>スコープが小さいところが優先と言いましたが、自身より小さいスコープの変数は覗きに行きません。<br>自分を基準として、内側から外側に向かって変数を探しに行きます。</p><p>なのでPythonは<code>y = x</code>の時に<code>funcY</code>の中を見渡して<code>x</code>がないかを探します。</p><p>すると、3行目に<code>x = 100</code>をしているのを見つけます。</p><p>なので、1行目の<code>x</code>はローカル変数の<code>x</code>として判断されます。</p><p>しかし、ローカル変数<code>x</code>が定義されるのは、<code>y = x</code>よりも後です。</p><p>だから、<code>x</code>が代入される前に参照されたと言うエラーを吐くわけです。</p><p><strong>変数の名前はスコープが小さいところのものが優先的に利用される</strong>と言うことを覚えておきましょう。</p><p>グローバル変数がどこからでも参照できると言うのは、スコープの小さいところから順番に探して行った時、最後に探される場所がグローバル空間だからと言う理由です。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> x
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;y =&#34;</span>, y)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcY()
+</span></span><span style=display:flex><span><span style=color:#75715e># y = 10</span>
+</span></span><span style=display:flex><span>print(<span style=color:#e6db74>&#34;x =&#34;</span>, x)
+</span></span><span style=display:flex><span><span style=color:#75715e># x = 10</span>
+</span></span></code></pre></div><p>上の例だと、変数を探しに行く順番が</p><ol><li><code>funcY</code>の中</li><li>グローバル空間</li></ol><p>と言う順番になっていて<code>funcY</code>のなかに<code>x</code>がないのでグローバル空間に<code>x</code>を探しに行きます。
+すると、<code>x</code>が見つかるので<code>funcY</code>のなかの<code>x</code>はグローバル空間の<code>x</code>であると認識されるわけです。</p><h3 id=グローバル宣言>グローバル宣言</h3><p>関数の中でもグローバル変数の値を変更したいときはあると思います。</p><p>そんな時に利用できるのが、<strong>グローバル宣言</strong>です。</p><p>関数の中で<code>global 変数名</code>とすることで利用できます。</p><p>グローバル宣言をすることで、この関数の中の<code>変数名</code>はグローバル変数のことであるということを示すことができます。</p><p>つまり、関数などの中で加えた変更をグローバル空間の変数に反映させることができます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span> 
+</span></span><span style=display:flex><span>y <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcX</span>():
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>global</span> x
+</span></span><span style=display:flex><span>    x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcX()
+</span></span><span style=display:flex><span>print(x)
+</span></span><span style=display:flex><span><span style=color:#75715e># 10 &lt;- `funcX`の中でglobal宣言をしているので`x`に加えた変更が反映されている</span>
+</span></span><span style=display:flex><span>print(y)
+</span></span><span style=display:flex><span><span style=color:#75715e># y = 0 # &lt;- `funcX`の中で`y`に加えた変更がは反映されない</span>
+</span></span></code></pre></div><p>ただ、この様なグローバル宣言をした変数をプログラムの中で多用すると、<em>いつ</em> <em>どこで</em> <em>どのような</em> 変更が加わったのかわかりにくくなってしまうので使い過ぎには気をつけましょう。</p><h3 id=おまけ>おまけ</h3><p>どのタイミングでどの変数が使えるのか分からん。<br>という人は組み込み関数<code>globals</code>、<code>locals</code>を使うとわかりやすかもしれません。</p><h4 id=globals関数>globals関数</h4><p>グローバル空間で利用できる変数を変数名をキー、値をバリューとして持った辞書として返してくれます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> x
+</span></span><span style=display:flex><span>    print(<span style=color:#e6db74>&#34;y =&#34;</span>, y)
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>print(globals()) <span style=color:#75715e># グローバル変数を取得  </span>
+</span></span><span style=display:flex><span><span style=color:#75715e># {&#39;x&#39;: 10, &#39;funcY&#39;: &lt;function funcY at 0x108707378&gt;}</span>
+</span></span></code></pre></div><p>※本当は組み込みの関数などいろいろ表示されますが、見づくなるので省略しています。</p><h4 id=locals関数>locals関数</h4><p>呼び出されたローカル空間で利用できる変数をglobals関数と同じように変数名をキー、値をバリューとして持った辞書を返してくれます。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-py data-lang=py><span style=display:flex><span>x <span style=color:#f92672>=</span> <span style=color:#ae81ff>10</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>funcY</span>():
+</span></span><span style=display:flex><span>    y <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
+</span></span><span style=display:flex><span>    print(locals()) <span style=color:#75715e># 呼び出されたローカル空間、つまり`funcY`の中で利用できるローカル変数を取得</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>funcY()
+</span></span><span style=display:flex><span><span style=color:#75715e># {&#39;y&#39;: 100}</span>
+</span></span></code></pre></div><h2 id=最後に>最後に</h2><p>変数のスコープが分かっていると、プログラムがぐっと書きやすくなります。<br>人のコードを読む時にも役に立つので、変数のスコープを気にしながらコードを書いてみましょう。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/python/ rel=tag>python</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/173/>kotlinでEnumをもっと便利に使いたい！</a></li><li class=widget__item><a class=widget__link href=/articles/124/>[Django] カスタムユーザーを利用する</a></li><li class=widget__item><a class=widget__link href=/articles/82/>Swiftにインクリメント(++)、デクリメント(--)を復活させる</a></li><li class=widget__item><a class=widget__link href=/articles/65/>PNGイメージのデータ構造を知ってみる(2)</a></li><li class=widget__item><a class=widget__link href=/articles/83/>[Django] Http Headerを取得、追加する方法</a></li><li class=widget__item><a class=widget__link href=/articles/177/>[Python] パッケージのsetup関数のclassifiersって何書けばいいの？</a></li><li class=widget__item><a class=widget__link href=/articles/181/>pythonの変数のスコープってどこからどこまで？</a></li><li class=widget__item><a class=widget__link href=/articles/179/>Django-Boost日本語ドキュメント</a></li><li class=widget__item><a class=widget__link href=/articles/180/>[python] pypiへのライブラリ公開手順</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c/c++/ title=c/c++>c/c++ (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (42)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django-boost/ title=Django-Boost>Django-Boost (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%82%AF%E3%83%A9%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%83%93%E3%83%A5%E3%83%BC%E3%81%AE%E3%81%99%E3%83%BD%E3%82%81/ title=Djangoクラスベースビューのすヽめ>Djangoクラスベースビューのすヽめ (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gitlab/ title=gitlab>gitlab (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (8)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/kotlin/ title=kotlin>kotlin (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/mac/ title=Mac>Mac (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/opencv/ title=OpenCV>OpenCV (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pyenv/ title=pyenv>pyenv (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pypi/ title=pypi>pypi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (19)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/raspberry-pi/ title="Raspberry Pi">Raspberry Pi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ssh/ title=ssh>ssh (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift/ title=swift>swift (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/unix/ title=unix>unix (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
