@@ -50,6 +50,9 @@ googleAnalytics = "UA-157456952-1"
     identifier = "article"
     name = "articles"
     url = "/articles/"
+  [[menu.footer]]
+    name = "プライバシーボリシー"
+    url = "/privacypolicy/"
 
 [markup]
   [markup.goldmark]
