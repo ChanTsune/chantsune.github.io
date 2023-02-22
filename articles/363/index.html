@@ -1,0 +1,114 @@
+<!doctype html><html class=no-js lang=ja><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="IE=edge"><title>Gitlab-CIでktlintを利用してコードフォーマットを実行する(Android/kotlin) - エンジニアもどきの技術メモ</title><script>(function(e,t){e[t]=e[t].replace("no-js","js")})(document.documentElement,"className")</script><meta name=description content><meta name=twitter:card content="summary"><meta name=twitter:title content="Gitlab-CIでktlintを利用してコードフォーマットを実行する(Android/kotlin)"><meta name=twitter:description content="kotlinで書かれたAndroidのプロジェクトに、ktlintを導入してコードフォーマットをGitLab-CI上で行わせた時のメモ ktl"><link rel=stylesheet href=/css/style.css><link rel=stylesheet href=/css/custom.css><link rel="shortcut icon" href=/favicon.ico><script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-157456952-1","auto"),ga("send","pageview"))</script><script async src=https://www.google-analytics.com/analytics.js></script></head><body class=body><div class="container container--outer"><header class=header><div class="container header__container"><div class="logo logo--mixed"><a class=logo__link href=/ title=エンジニアもどきの技術メモ rel=home><div class="logo__item logo__imagebox"><img class=logo__img src=/img/avatar.png></div><div class="logo__item logo__text"><div class=logo__title>エンジニアもどきの技術メモ</div></div></a></div><nav class=menu><button class=menu__btn aria-haspopup=true aria-expanded=false tabindex=0>
+<span class=menu__btn-title tabindex=-1>メニュー</span></button><ul class=menu__list><li class=menu__item><a class=menu__link href=/articles/><span class=menu__text>articles</span></a></li></ul></nav></div></header><div class="wrapper flex"><div class=primary><main class=main role=main><article class=post><header class=post__header><h1 class=post__title>Gitlab-CIでktlintを利用してコードフォーマットを実行する(Android/kotlin)</h1><div class="post__meta meta"><div class="meta__item-datetime meta__item"><svg class="meta__icon icon icon-time" width="16" height="14" viewBox="0 0 30 28"><path d="M15 0C7 0 1 6 1 14s6 14 14 14 14-6 14-14S23 0 15 0zm0 25C9 25 4 20 4 14S9 3 15 3s11 5 11 11-5 11-11 11zm1-18h-2v8.4l6.8 4.4L22 18l-6-3.8V7z"/></svg><time class=meta__text datetime=2021-02-23T09:51:24Z>February 23, 2021</time></div></div></header><div class="content post__content clearfix"><p>kotlinで書かれたAndroidのプロジェクトに、ktlintを導入してコードフォーマットをGitLab-CI上で行わせた時のメモ</p><h2 id=ktlintを導入する>ktlintを導入する</h2><p>フォーマット対象のプロジェクトの<code>gradle.build</code>ファイルに以下を追記します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-groovy data-lang=groovy><span style=display:flex><span>plugins <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>  id<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;org.jlleitschuh.gradle.ktlint&#34;</span><span style=color:#f92672>)</span> version <span style=color:#e6db74>&#34;&lt;version&gt;&#34;</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>この時点で既に、コードフォーマット(<code>ktlintFormat</code>)は実行できるのですが、
+プラグインを追加しただけだと、デフォルトの設定が利用されるので必要があれば追加でktlintの設定を追加します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-groovy data-lang=groovy><span style=display:flex><span>ktlint <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>    debug <span style=color:#f92672>=</span> <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>    verbose <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    android <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    outputToConsole <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    ignoreFailures <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    enableExperimentalRules <span style=color:#f92672>=</span> <span style=color:#66d9ef>true</span>
+</span></span><span style=display:flex><span>    filter <span style=color:#f92672>{</span>
+</span></span><span style=display:flex><span>        exclude<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;**/generated/**&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>        include<span style=color:#f92672>(</span><span style=color:#e6db74>&#34;**/kotlin/**&#34;</span><span style=color:#f92672>)</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>}</span>
+</span></span><span style=display:flex><span><span style=color:#f92672>}</span>
+</span></span></code></pre></div><p>詳しくは、ドキュメントを参照
+<a href=https://github.com/JLLeitschuh/ktlint-gradle>https://github.com/JLLeitschuh/ktlint-gradle</a></p><h2 id=gitlab-ciの設定>GitLab-CIの設定</h2><p>続いて先ほど導入したktlintによるコードフォーマットをGitLab-CI Runner上で実行して、実行結果をコミットできるように設定を行います。</p><p>GitLab-CI Runnerでコミットするにはアクセストークンを発行する方法や、
+自分のGitLabアカウントにSSH鍵を登録する方法などがありますが、
+今回はなるべく自分のアカウントに紐付けたく無いので、プロジェクトのDeploy KeyとしてSSH鍵を登録してそれを利用する方法で行いたいと思います。</p><h3 id=sshキーペアの作成>SSHキーペアの作成</h3><p>公式のドキュメントに手順が載っています。</p><p><a href=https://docs.gitlab.com/ce/ssh/README.html#generating-a-new-ssh-key-pair>https://docs.gitlab.com/ce/ssh/README.html#generating-a-new-ssh-key-pair</a></p><p><code>sshkey-gen</code>で鍵を作るだけなので細かい説明は省きます。</p><h3 id=ssh公開鍵の登録>SSH公開鍵の登録</h3><p>先程の手順で <code>sshkey-gen</code>で作成したSSHの公開鍵(<code>.pub</code>がついている方)をプロジェクトのDeploy Keyとして登録します。</p><p>メニューから <code>Settings</code> > <code>Repository</code> と選択して、<code>Deploy Key</code>の項目にSSHの公開鍵を登録します。</p><p>登録するときに<code>Write access allowed</code>にチェックを入れて書き込み権限を有効にしておきます。</p><h3 id=環境変数にssh秘密鍵を設定>環境変数にSSH秘密鍵を設定</h3><p>続いて環境変数に、SSH秘密鍵を設定してGitLab-CI Runner上で利用できるようにします。</p><p>メニューから <code>Settings</code> > <code>CI / CD</code> と選択して、<code>Variables</code>の項目にSSHの秘密鍵を登録します。</p><p>名前は何でもいいのですが、今回はわかりやすく<code>SSH_PRIVATE_KEY</code>として登録します。</p><p>先程の公開鍵と対になる(<code>.pub</code>のつかない方)ファイルの中身を<code>-----BEGIN ~~ PRIVATE KEY-----</code>,<code>-----END ~~ PRIVATE KEY-----</code>を含めて登録してください。</p><p>登録する際に最後の行に改行が入らないように注意してください。
+筆者がハマっったポイントその1です。</p><p>また、保護されたブランチのみで実行する場合は問題ないですが、
+保護されたブランチ以外でも実行する場合、<code>Protect variable</code>のチェックも外しておいて下さい。
+筆者がハマったポイントその2です。</p><p>これでSSH関連の設定は完了です。</p><h3 id=gitlab-ciymlの追加>.gitlab-ci.ymlの追加</h3><p>続いて、次のような<code>.gitlab-ci.yml</code>ファイルを作成します。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=display:flex><span><span style=color:#f92672>format</span>:
+</span></span><span style=display:flex><span>    <span style=color:#f92672>image</span>: <span style=color:#ae81ff>runmymind/docker-android-sdk:alpine-standalone</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>variables</span>:
+</span></span><span style=display:flex><span>        <span style=color:#f92672>GIT_STRATEGY</span>: <span style=color:#ae81ff>clone</span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>script</span>:
+</span></span><span style=display:flex><span>    <span style=color:#75715e># ssh のインストール</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>apk --update add openssh</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># ssh のセットアップ</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>mkdir -p ~/.ssh</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>chmod 700 ~/.ssh</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>ssh-keyscan -H &#34;$CI_SERVER_HOST&#34; &gt;&gt; ~/.ssh/known_hosts</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>eval &#34;$(ssh-agent -s)&#34;</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>echo &#34;$SSH_PRIVATE_KEY&#34; | ssh-add - &gt; /dev/null</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Git のインストール</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>apk --update add git</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># Gitのセットアップ</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>git config user.name $GITLAB_USER_NAME</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>git config user.email $GITLAB_USER_EMAIL</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>git remote set-url --push origin git@$CI_SERVER_HOST:$CI_PROJECT_PATH.git</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>git checkout $CI_COMMIT_REF_NAME</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># コミットしたい処理</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>./gradlew clean ktlintFormat</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e># 差分があるときはコミット</span>
+</span></span><span style=display:flex><span>    - <span style=color:#ae81ff>git add -u</span>
+</span></span><span style=display:flex><span>    - |-<span style=color:#e6db74>
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        if [ `git status -s | wc -l` -gt 0 ]; then
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            git commit -m &#34;ci&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>            git push --push-option=ci.skip origin $CI_COMMIT_REF_NAME
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>        fi</span>        
+</span></span></code></pre></div><p>今回は、Androidのプロジェクトを対象にしているので、Android SDKの入っているDockerイメージを利用しています。
+また、alpine-linuxベースのイメージを利用しているので<code>openssh</code>のインストールも行なっています。</p><p>変更がない状態でコミットを行うとジョブが失敗扱いになってしまうので、変更の有無で条件分岐させています。</p><p>以上で、設定は終わりです。</p><h2 id=さいごに>さいごに</h2><p>今回、筆者が設定した時は、環境変数の設定部分でだいぶハマったので忘れないためのメモでした。</p><p>CIでコードフォーマットができて幸せ。</p></div><footer class=post__footer><div class="post__tags tags clearfix"><svg class="tags__badge icon icon-tag" width="16" height="16" viewBox="0 0 32 32"><path d="M32 19c0 1-1 2-1 2L21 31s-1 1-2 1-2-1-2-1L2 16c-1-1-1.4-2-1.4-2S0 12.5.0 11V3C0 1.5.8.8.8.8S1.5.0 3 0h8c1.5.0 3 .6 3 .6S15 1 16 2l15 15s1 1 1 2zM7 10a3 3 0 100-6 3 3 0 000 6z"/></svg><ul class=tags__list><li class=tags__item><a class="tags__link btn" href=/tags/android/ rel=tag>Android</a></li><li class=tags__item><a class="tags__link btn" href=/tags/gitlab/ rel=tag>gitlab</a></li><li class=tags__item><a class="tags__link btn" href=/tags/gradle/ rel=tag>gradle</a></li><li class=tags__item><a class="tags__link btn" href=/tags/kotlin/ rel=tag>kotlin</a></li></ul></div></footer></article></main><div class="authorbox clearfix"><figure class=authorbox__avatar><img alt="ChanTsune avatar" src=/img/avatar.png class=avatar height=90 width=90></figure><div class=authorbox__header><span class=authorbox__name>ChanTsuneについて</span></div><div class=authorbox__description>C++とPythonが大好きなエンジニアもどきの技術メモ</div></div></div><aside class=sidebar><div class="widget-search widget"><form class=widget-search__form role=search method=get action=https://google.com/search><label><input class=widget-search__field type=search placeholder=検索… name=q aria-label=検索…></label>
+<input class=widget-search__submit type=submit value=Search>
+<input type=hidden name=sitesearch value=https://chantsune.github.io></form></div><div class="widget-recent widget"><h4 class=widget__title>最近の投稿</h4><div class=widget__content><ul class=widget__list><li class=widget__item><a class=widget__link href=/articles/1/>vscodeの正規表現検索でファイルの先頭、ファイルの末尾にマッチさせて検索</a></li><li class=widget__item><a class=widget__link href=/articles/288/>tar ballが .gzだろうが.xzだろうが.zstだろうが解凍してやる！</a></li><li class=widget__item><a class=widget__link href=/articles/311/>[Android/kotlin] 端末にインストールしてあるアプリのパッケージを取得する</a></li><li class=widget__item><a class=widget__link href=/articles/198/>[Excel]JAN-13とインジケータからGTIN-14を計算する</a></li><li class=widget__item><a class=widget__link href=/articles/289/>ディレクトリ内のwavファイルをffmpegでまとめてflacに変換</a></li><li class=widget__item><a class=widget__link href=/articles/303/>clangでc言語のソースコードからLLVM IRを得る</a></li><li class=widget__item><a class=widget__link href=/articles/290/>Xcode プロジェクトの project.pbxproj が壊れて開けない</a></li><li class=widget__item><a class=widget__link href=/articles/363/>Gitlab-CIでktlintを利用してコードフォーマットを実行する(Android/kotlin)</a></li><li class=widget__item><a class=widget__link href=/articles/297/>[Django] ユーザー認証でパスワードに大文字小文字数字を含むよう強制する</a></li><li class=widget__item><a class=widget__link href=/articles/362/>[Python] リスト内包表記 大解剖</a></li></ul></div></div><div class="widget-taglist widget"><h4 class=widget__title>タグ</h4><div class=widget__content><a class="widget-taglist__link widget__link btn" href=/tags/android/ title=Android>Android (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/bootstrap/ title=bootstrap>bootstrap (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c++/ title=c++>c++ (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/c/c++/ title=c/c++>c/c++ (9)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/carthage/ title=Carthage>Carthage (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/cocoapods/ title=CocoaPods>CocoaPods (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/css/ title=CSS>CSS (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django/ title=django>django (53)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django-boost/ title=Django-Boost>Django-Boost (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django-rest-framework/ title="Django Rest Framework">Django Rest Framework (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%81%A7%E3%83%96%E3%83%AD%E3%82%B0%E3%82%92%E4%BD%9C%E3%82%8D%E3%81%86/ title=Djangoでブログを作ろう>Djangoでブログを作ろう (10)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/django%E3%82%AF%E3%83%A9%E3%82%B9%E3%83%99%E3%83%BC%E3%82%B9%E3%83%93%E3%83%A5%E3%83%BC%E3%81%AE%E3%81%99%E3%83%BD%E3%82%81/ title=Djangoクラスベースビューのすヽめ>Djangoクラスベースビューのすヽめ (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/dune/ title=dune>dune (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/excel/ title=Excel>Excel (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ffmpeg/ title=ffmpeg>ffmpeg (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/github/ title=GitHub>GitHub (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gitlab/ title=gitlab>gitlab (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/golang/ title=golang>golang (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/gradle/ title=gradle>gradle (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/heroku/ title=heroku>heroku (9)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/homebrew/ title=homebrew>homebrew (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/html/ title=html>html (9)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/javascript/ title=javascript>javascript (8)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/kotlin/ title=kotlin>kotlin (7)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ktpystring/ title=ktPyString>ktPyString (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/linux/ title=linux>linux (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/llvm/ title=LLVM>LLVM (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/llvm-ir/ title="LLVM IR">LLVM IR (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/mac/ title=Mac>Mac (9)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/markdown/ title=markdown>markdown (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ocaml/ title=OCaml>OCaml (4)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/opencv/ title=OpenCV>OpenCV (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pip/ title=pip>pip (6)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/py_string/ title=py_string>py_string (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pyenv/ title=pyenv>pyenv (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/pypi/ title=pypi>pypi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/python/ title=python>python (45)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/raspberry-pi/ title="Raspberry Pi">Raspberry Pi (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ssh/ title=ssh>ssh (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift/ title=swift>swift (9)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swift-package-manager/ title="Swift Package Manager">Swift Package Manager (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swiftui/ title=SwiftUI>SwiftUI (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/swiftypystring/ title=SwiftyPyString>SwiftyPyString (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/travis-ci/ title="Travis CI">Travis CI (3)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/typesctipt/ title=TypeSctipt>TypeSctipt (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/ubuntu/ title=Ubuntu>Ubuntu (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/unix/ title=unix>unix (5)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/vscode/ title=vscode>vscode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/xcode/ title=Xcode>Xcode (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%81%9D%E3%81%AE%E4%BB%96/ title=その他>その他 (1)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E3%83%87%E3%83%BC%E3%82%BF%E6%A7%8B%E9%80%A0/ title=データ構造>データ構造 (2)</a>
+<a class="widget-taglist__link widget__link btn" href=/tags/%E6%A9%9F%E6%A2%B0%E5%AD%A6%E7%BF%92/ title=機械学習>機械学習 (1)</a></div></div><div class="widget-social widget"><h4 class="widget-social__title widget__title">ソーシャル</h4><div class="widget-social__content widget__content"><div class="widget-social__item widget__item"><a class="widget-social__link widget__link btn" title=GitHub rel="noopener noreferrer" href=https://github.com/ChanTsune target=_blank><svg class="widget-social__link-icon icon icon-github" width="24" height="24" viewBox="0 0 384 374"><path d="m192 0C85.9.0.0 85.8.0 191.7c0 84.7 55 156.6 131.3 181.9 9.6 1.8 13.1-4.2 13.1-9.2.0-4.6-.2-16.6-.3-32.6-53.4 11.6-64.7-25.7-64.7-25.7-8.7-22.1-21.3-28-21.3-28-17.4-11.9 1.3-11.6 1.3-11.6 19.3 1.4 29.4 19.8 29.4 19.8 17.1 29.3 44.9 20.8 55.9 15.9 1.7-12.4 6.7-20.8 12.2-25.6-42.6-4.8-87.5-21.3-87.5-94.8.0-20.9 7.5-38 19.8-51.4-2-4.9-8.6-24.3 1.9-50.7.0.0 16.1-5.2 52.8 19.7 15.3-4.2 31.7-6.4 48.1-6.5 16.3.1 32.7 2.2 48.1 6.5 36.7-24.8 52.8-19.7 52.8-19.7 10.5 26.4 3.9 45.9 1.9 50.7 12.3 13.4 19.7 30.5 19.7 51.4.0 73.7-44.9 89.9-87.7 94.6 6.9 5.9 13 17.6 13 35.5.0 25.6-.2 46.3-.2 52.6.0 5.1 3.5 11.1 13.2 9.2C329 348.2 384 276.4 384 191.7 384 85.8 298 0 192 0z"/></svg><span>GitHub</span></a></div></div></div></aside></div><footer class=footer><div class="container footer__container flex"><div class=footer__copyright>&copy; 2023 ChanTsune.
+<span class=footer__copyright-credits>このサイトは <a href=https://gohugo.io/ rel="nofollow noopener" target=_blank>Hugo</a> と <a href=https://github.com/Vimux/Mainroad/ rel="nofollow noopener" target=_blank>Mainroad</a> テーマで生成されています。</span></div></div></footer></div><script async defer src=/js/menu.js></script>
+<script src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2164456517159304"></script></body></html>
