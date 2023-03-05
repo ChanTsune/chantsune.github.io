@@ -4,6 +4,7 @@ languageCode = "ja"
 DefaultContentLanguage = "ja"
 HasCJKLanguage = true
 enableRobotsTXT = true
+enableGitInfo = true
 
 title = "エンジニアもどきの技術メモ"
 
@@ -58,3 +59,6 @@ googleAnalytics = "UA-157456952-1"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[frontmatter]
+  lastmod = ["lastmod", ":git", "date", "publishDate"]
