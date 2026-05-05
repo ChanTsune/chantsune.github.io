@@ -13,7 +13,7 @@ paginate = 20
 
 googleAnalytics = "UA-157456952-1"
 
-[Author]
+[Params.author]
     name = "ChanTsune"
     bio = "C++とPythonが大好きなエンジニアもどきの技術メモ"
     avatar = "img/avatar.png"
