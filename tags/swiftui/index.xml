@@ -1,1 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>SwiftUI on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/swiftui/</link><description>Recent content in SwiftUI on エンジニアもどきの技術メモ</description><generator>Hugo -- gohugo.io</generator><language>ja</language><lastBuildDate>Mon, 31 Aug 2020 23:19:04 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/swiftui/index.xml" rel="self" type="application/rss+xml"/><item><title>[SwiftUI] ActionSheetにイベントを設置する</title><link>https://chantsune.github.io/articles/300/</link><pubDate>Fri, 10 Jan 2020 03:02:12 +0000</pubDate><guid>https://chantsune.github.io/articles/300/</guid><description>SwiftUIのActionSheetの選択肢を選んだ時の動作をどこに記述すればいいのかわからなかったので調べてみた。 import SwiftUI struct ContentView: View { @State private var isActionSheet =</description></item><item><title>SwiftUIでImageの大きさを変更する</title><link>https://chantsune.github.io/articles/299/</link><pubDate>Tue, 07 Jan 2020 09:30:13 +0000</pubDate><guid>https://chantsune.github.io/articles/299/</guid><description>SwiftUIで表示する画像の大きさを変更しようとした時にframeメソッドで大きさを指定してもリサイズできなかったので、変更方法を調べてみ</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>SwiftUI on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/swiftui/</link><description>Recent content in SwiftUI on エンジニアもどきの技術メモ</description><generator>Hugo</generator><language>ja</language><lastBuildDate>Mon, 31 Aug 2020 23:19:04 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/swiftui/index.xml" rel="self" type="application/rss+xml"/><item><title>[SwiftUI] ActionSheetにイベントを設置する</title><link>https://chantsune.github.io/articles/300/</link><pubDate>Fri, 10 Jan 2020 03:02:12 +0000</pubDate><guid>https://chantsune.github.io/articles/300/</guid><description>&lt;p&gt;SwiftUIのActionSheetの選択肢を選んだ時の動作をどこに記述すればいいのかわからなかったので調べてみた。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-swift" data-lang="swift"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;import&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;SwiftUI&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ContentView&lt;/span&gt;: View {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; @State &lt;span style="color:#66d9ef"&gt;private&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; isActionSheet = &lt;span style="color:#66d9ef"&gt;false&lt;/span&gt; &lt;span style="color:#75715e"&gt;// アクションシートの表示コントロール用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; body: some View {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Button(action: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;self&lt;/span&gt;.isActionSheet.toggle() &lt;span style="color:#75715e"&gt;// ボタンをタップした時に表示する様にする&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }) {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; Text(&lt;span style="color:#e6db74"&gt;&amp;#34;ActionSheet&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .padding()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .actionSheet(isPresented: &lt;span style="color:#960050;background-color:#1e0010"&gt;$&lt;/span&gt;isActionSheet, content: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ActionSheet(title: Text(&lt;span style="color:#e6db74"&gt;&amp;#34;select action&amp;#34;&lt;/span&gt;), 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; message: Text(&lt;span style="color:#e6db74"&gt;&amp;#34;SubTitle&amp;#34;&lt;/span&gt;), 
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; buttons: [
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .&lt;span style="color:#66d9ef"&gt;default&lt;/span&gt;(Text(&lt;span style="color:#e6db74"&gt;&amp;#34;Save&amp;#34;&lt;/span&gt;), action: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Save&amp;#34;&lt;/span&gt;) &lt;span style="color:#75715e"&gt;// この選択肢が選ばれた時の動作&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .destructive(Text(&lt;span style="color:#e6db74"&gt;&amp;#34;Delete&amp;#34;&lt;/span&gt;), action: {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; print(&lt;span style="color:#e6db74"&gt;&amp;#34;Delete&amp;#34;&lt;/span&gt;)
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }),
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; .cancel() &lt;span style="color:#75715e"&gt;// アクションシートを閉じるだけ&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ])
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; })
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#66d9ef"&gt;struct&lt;/span&gt; &lt;span style="color:#a6e22e"&gt;ContentView_Previews&lt;/span&gt;: PreviewProvider {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; &lt;span style="color:#66d9ef"&gt;static&lt;/span&gt; &lt;span style="color:#66d9ef"&gt;var&lt;/span&gt; previews: some View {
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; ContentView()
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt; }
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;ボタンを押した時に&lt;code&gt;isShowActionSheet&lt;/code&gt;の値を切り替えて&lt;code&gt;ActionSheet&lt;/code&gt;の表示、非表示をコントロールしている。&lt;/p&gt;</description></item><item><title>SwiftUIでImageの大きさを変更する</title><link>https://chantsune.github.io/articles/299/</link><pubDate>Tue, 07 Jan 2020 09:30:13 +0000</pubDate><guid>https://chantsune.github.io/articles/299/</guid><description>&lt;p&gt;SwiftUIで表示する画像の大きさを変更しようとした時に&lt;code&gt;frame&lt;/code&gt;メソッドで大きさを指定してもリサイズできなかったので、変更方法を調べてみた。&lt;/p&gt;</description></item></channel></rss>

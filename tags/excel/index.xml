@@ -1,1 +1,31 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Excel on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/excel/</link><description>Recent content in Excel on エンジニアもどきの技術メモ</description><generator>Hugo -- gohugo.io</generator><language>ja</language><lastBuildDate>Sat, 23 Apr 2022 02:24:38 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/excel/index.xml" rel="self" type="application/rss+xml"/><item><title>[Excel]JAN-13とインジケータからGTIN-14を計算する</title><link>https://chantsune.github.io/articles/198/</link><pubDate>Sat, 23 Apr 2022 02:24:38 +0000</pubDate><guid>https://chantsune.github.io/articles/198/</guid><description>JAN-13とインジケータからGTIN-14を計算する関数 TD, TL A B C D 1 インジケータ JAN-13 GTIN-14 2 1 4549414003260 =CONCATENATE(TEXT(B2, &amp;ldquo;0&amp;rdquo;), LEFT(TEXT(C2, &amp;ldquo;0000000000000&amp;rdquo;), 12), TEXT(10 - MOD(SUM(VALUE(MID(C2, 1, 1)), VALUE(MID(C2, 3, 1)), VALUE(MID(C2, 5, 1)), VALUE(MID(C2, 7, 1)), VALUE(MID(C2, 9, 1)), VALUE(MID(C2,</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Excel on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/excel/</link><description>Recent content in Excel on エンジニアもどきの技術メモ</description><generator>Hugo</generator><language>ja</language><lastBuildDate>Sat, 23 Apr 2022 02:24:38 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/excel/index.xml" rel="self" type="application/rss+xml"/><item><title>[Excel]JAN-13とインジケータからGTIN-14を計算する</title><link>https://chantsune.github.io/articles/198/</link><pubDate>Sat, 23 Apr 2022 02:24:38 +0000</pubDate><guid>https://chantsune.github.io/articles/198/</guid><description>&lt;p&gt;JAN-13とインジケータからGTIN-14を計算する関数&lt;/p&gt;
+&lt;h2 id="td-tl"&gt;TD, TL&lt;/h2&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th style="text-align: center"&gt;&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;A&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;B&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;C&lt;/th&gt;
+ &lt;th style="text-align: center"&gt;D&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: center"&gt;1&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;インジケータ&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;JAN-13&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;GTIN-14&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;tr&gt;
+ &lt;td style="text-align: center"&gt;2&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;1&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;4549414003260&lt;/td&gt;
+ &lt;td style="text-align: center"&gt;=CONCATENATE(TEXT(B2, &amp;ldquo;0&amp;rdquo;), LEFT(TEXT(C2, &amp;ldquo;0000000000000&amp;rdquo;), 12), TEXT(10 - MOD(SUM(VALUE(MID(C2, 1, 1)), VALUE(MID(C2, 3, 1)), VALUE(MID(C2, 5, 1)), VALUE(MID(C2, 7, 1)), VALUE(MID(C2, 9, 1)), VALUE(MID(C2, 11, 1)))+SUM(B2, VALUE(MID(C2, 2, 1)), VALUE(MID(C2, 4, 1)), VALUE(MID(C2, 6, 1)), VALUE(MID(C2, 8, 1)), VALUE(MID(C2, 10, 1)), VALUE(MID(C2, 12, 1)))*3, 10), &amp;ldquo;0&amp;rdquo;))&lt;/td&gt;
+ &lt;/tr&gt;
+ &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2 id="jangtinのcheck-digitの仕様"&gt;JAN,GTINのcheck digitの仕様&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://www.gs1jp.org/code/jan/check_digit.html"&gt;https://www.gs1jp.org/code/jan/check_digit.html&lt;/a&gt;&lt;/p&gt;</description></item></channel></rss>

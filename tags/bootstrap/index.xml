@@ -1,1 +1,22 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bootstrap on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/bootstrap/</link><description>Recent content in Bootstrap on エンジニアもどきの技術メモ</description><generator>Hugo -- gohugo.io</generator><language>ja</language><lastBuildDate>Fri, 22 Oct 2021 06:56:28 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/bootstrap/index.xml" rel="self" type="application/rss+xml"/><item><title>Bootrtrap4のブレークポイント一覧</title><link>https://chantsune.github.io/articles/284/</link><pubDate>Wed, 25 Dec 2019 09:56:22 +0000</pubDate><guid>https://chantsune.github.io/articles/284/</guid><description>sm,md,lgなどのブレークポイントの一覧 Bootstrapベースで作っていると独自のスタイルを当てるときもBootstrapに合わせてブ</description></item><item><title>[Django] Bootstrapを利用したwebデザイン</title><link>https://chantsune.github.io/articles/78/</link><pubDate>Fri, 23 Nov 2018 01:11:26 +0000</pubDate><guid>https://chantsune.github.io/articles/78/</guid><description>Djangoでブログを作る-最終回-です。 シリーズ一覧 プロジェクトの作成とアプリケーションの作成 view関数の書き方 URLの指定の仕方(UR</description></item><item><title>Bootstrapの「container-fluid」と「container」って結局どう違うの？</title><link>https://chantsune.github.io/articles/7/</link><pubDate>Thu, 27 Sep 2018 13:14:41 +0000</pubDate><guid>https://chantsune.github.io/articles/7/</guid><description>結論 画面の左右に余白をもたせたい場合は「container」 画面いっぱいにコンテンツを表示するなら「container-fluid」 感覚とし</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Bootstrap on エンジニアもどきの技術メモ</title><link>https://chantsune.github.io/tags/bootstrap/</link><description>Recent content in Bootstrap on エンジニアもどきの技術メモ</description><generator>Hugo</generator><language>ja</language><lastBuildDate>Fri, 22 Oct 2021 06:56:28 +0000</lastBuildDate><atom:link href="https://chantsune.github.io/tags/bootstrap/index.xml" rel="self" type="application/rss+xml"/><item><title>Bootrtrap4のブレークポイント一覧</title><link>https://chantsune.github.io/articles/284/</link><pubDate>Wed, 25 Dec 2019 09:56:22 +0000</pubDate><guid>https://chantsune.github.io/articles/284/</guid><description>&lt;p&gt;sm,md,lgなどのブレークポイントの一覧&lt;/p&gt;
+&lt;p&gt;Bootstrapベースで作っていると独自のスタイルを当てるときもBootstrapに合わせてブレークポイントを設置したくなるので、その時用のメモ&lt;/p&gt;</description></item><item><title>[Django] Bootstrapを利用したwebデザイン</title><link>https://chantsune.github.io/articles/78/</link><pubDate>Fri, 23 Nov 2018 01:11:26 +0000</pubDate><guid>https://chantsune.github.io/articles/78/</guid><description>&lt;p&gt;Djangoでブログを作る-最終回-です。&lt;/p&gt;
+&lt;h3 id="シリーズ一覧"&gt;シリーズ一覧&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/68/"&gt;プロジェクトの作成とアプリケーションの作成&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/69/"&gt;view関数の書き方&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/70/"&gt;URLの指定の仕方(URLディスパッチャ)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/71/"&gt;データベース(モデル)の設定&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/72/"&gt;記事の投稿ページの作成&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/73/"&gt;記事の一覧ページと詳細ページの追加&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/74/"&gt;記事の編集ページと記事の削除機能の追加&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/75/"&gt;いいね機能の追加&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/77/"&gt;コメント機能の追加&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://chantsune.github.io/articles/78/"&gt;Bootstrapを利用したwebデザイン&lt;/a&gt; &amp;lt;- 今回&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;「Bootstrapを利用したwebデザイン」なんてつけてますが、おまけ程度にしかやらないのでそんなに期待しないでくださいね。&lt;br&gt;
+基本的に筆者はデザイン得意じゃないんです&amp;hellip;&lt;/p&gt;</description></item><item><title>Bootstrapの「container-fluid」と「container」って結局どう違うの？</title><link>https://chantsune.github.io/articles/7/</link><pubDate>Thu, 27 Sep 2018 13:14:41 +0000</pubDate><guid>https://chantsune.github.io/articles/7/</guid><description>&lt;h2 id="結論"&gt;結論&lt;/h2&gt;
+&lt;p&gt;画面の左右に余白をもたせたい場合は「container」&lt;br&gt;
+画面いっぱいにコンテンツを表示するなら「container-fluid」&lt;/p&gt;
+&lt;p&gt;感覚としては&lt;code&gt;container-fluid&lt;/code&gt;の方が自由が利くので、どっちにするか迷ったら&lt;code&gt;container-fluid&lt;/code&gt;一択で良いんじゃなかろうか。&lt;/p&gt;</description></item></channel></rss>
